@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "apellido": "García",
+    "nombre": "Ana",
+    "dni": "30222333",
+    "mascota": "Rex",
+    "especie": "perro",
+    "raza": "pastor alemán",
+    "fecha": "2025-05-30",
+    "hora": "14:00",
+    "profesional": "Dr. Fernández",
+    "tipoConsulta": "Vacunación",
+    "estado": true
+  },
+  {
+    "id": 2,
+    "apellido": "López",
+    "nombre": "Carlos",
+    "dni": "29555111",
+    "mascota": "Michi",
+    "especie": "gato",
+    "raza": "siamés",
+    "fecha": "2025-06-01",
+    "hora": "09:30",
+    "profesional": "Dr. Fernández",
+    "tipoConsulta": "Chequeo general",
+    "estado": true
+  },
+  {
+    "id": 3,
+    "apellido": "Bianchi",
+    "nombre": "Gonzalo",
+    "dni": "28444888",
+    "mascota": "Toby",
+    "especie": "perro",
+    "raza": "labrador",
+    "fecha": "2025-06-02",
+    "hora": "11:00",
+    "profesional": "Juan Pérez",
+    "tipoConsulta": "Baño",
+    "estado": true
+  },
+  
+  {
+    "id": 4,
+    "apellido": "Suarez",
+    "nombre": "Paz",
+    "dni": "29999999",
+    "mascota": "Rod",
+    "especie": "perro",
+    "raza": "caniche",
+    "fecha": "2025-06-02",
+    "hora": "14:00",
+    "profesional": "Roxana Gonzalez",
+    "tipoConsulta": "Peluquería",
+    "estado": true
+  },
+  
+  {
+    "id": 5,
+    "apellido": "Garciarena",
+    "nombre": "Julián",
+    "dni": "29999991",
+    "mascota": "Rodo",
+    "especie": "gato",
+    "raza": "egipcio",
+    "fecha": "2025-06-02",
+    "hora": "14:00",
+    "profesional": "Juan Pérez",
+    "tipoConsulta": "Baño",
+    "estado": false
+  }
+  
+]

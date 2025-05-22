@@ -11,7 +11,13 @@ app.get('/', (req, res) => {
     res.send('Hola Mundo');
 });
 
+// Importar el archivo de rutas de turnos
+const consultaTurnosRouter = require("./routes/consultaTurnosRouter");
+
+app.use('/turnos', consultaTurnosRouter);
+
 app.listen(port, () => {
     console.log(`Server corriendo en http://localhost:${port}`);
     }
 );
+
