@@ -67,11 +67,9 @@ const obtenerTurnosFiltrados = async (req, res) => {
 		// --------------------- CONTROL DE ERRORES ------------------------------
 
 		if (resultados.length === 0) {
-			return res
-				.status(404)
-				.json({
-					mensaje: "No se encontraron turnos que coincidan con la búsqueda.",
-				});
+			return res.status(404).json({
+				mensaje: "No se encontraron turnos que coincidan con la búsqueda.",
+			});
 		}
 
 		res.json(resultados);
@@ -81,6 +79,21 @@ const obtenerTurnosFiltrados = async (req, res) => {
 	}
 };
 
+//---------- FUNCION MOSTRAR LOS TURNOS (PUG) ---------------
+const mostrarTurnos = async (req, res) => {
+	try {
+		const rutaJSON = path.join(__dirname, "..", "..", "data", "turnos.json");
+		const data = await fs.readFile(rutaJSON, "utf-8");
+		const turnos = JSON.parse(data);
+		res.render("turnos", { turnos });
+	} catch (error) {
+		console.error("Error al mostrar los turnos:", error);
+		res.status(500).send("Error al mostrar los turnos");
+	}
+};
+
+// Exportar ambas funciones
 module.exports = {
 	obtenerTurnosFiltrados,
+	mostrarTurnos,
 };
