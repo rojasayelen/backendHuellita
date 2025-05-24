@@ -23,10 +23,10 @@ const postUsuarios = async (req, res) => {
     try {
         // 1. Obtener los datos del body
         console.log(req);
-        const { nombre, apellido, mail, password } = req.body;
+        const { nombre, apellido, email, password } = req.body;
 
         // 2. Validación de campos requeridos
-        if (!nombre || !apellido || !mail || !password ) {
+        if (!nombre || !apellido || !email || !password ) {
             return res.status(400).json({
                 error: "Todos los campos son requeridos: nombre, apellido, mail, password."
             });
@@ -49,8 +49,8 @@ const postUsuarios = async (req, res) => {
         }
 
         // 4. Verificar si el email ya existe
-        if (usuarios.some(user => user.mail === mail)) {
-            return res.status(400).json({ error: `El email '${mail}' ya está registrado.` });
+        if (usuarios.some(user => user.email === email)) {
+            return res.status(400).json({ error: `El email '${email}' ya está registrado.` });
         }
 
         // 5. Generar un nuevo ID para el usuario
@@ -61,7 +61,7 @@ const postUsuarios = async (req, res) => {
             id: nuevoId,
             nombre,
             apellido,
-            mail,
+            email,
             password: password, 
             //TO DO: agregar tipo de usuario
             // tipo_usuario
