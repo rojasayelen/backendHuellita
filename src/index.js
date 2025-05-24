@@ -4,6 +4,8 @@ const path = require("path");
 
 const app = express();
 
+app.use(express.json());
+
 //Configuración de pug y carpeta de vistas
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
@@ -18,7 +20,12 @@ app.get("/", (req, res) => {
 
 // Importar el archivo de rutas de turnos
 const consultaTurnosRouter = require("./routes/consultaTurnosRouter");
+const getUsuarios  = require("./routes/userRoute");
+const postUsuarios = require("./routes/userRoute");
+
 app.use("/turnos", consultaTurnosRouter);
+app.use("/usuarios", getUsuarios);
+app.use("/registroUser", postUsuarios);
 
 app.listen(port, () => {
 	console.log(`Server corriendo en http://localhost:${port}`);

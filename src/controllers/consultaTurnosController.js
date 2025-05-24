@@ -82,7 +82,7 @@ const obtenerTurnosFiltrados = async (req, res) => {
 //---------- FUNCION MOSTRAR LOS TURNOS (PUG) ---------------
 const mostrarTurnos = async (req, res) => {
 	try {
-		const rutaJSON = path.join(__dirname, "..", "..", "data", "turnos.json");
+		const rutaJSON = path.join(__dirname, "..", "data","turnos.json");
 		const data = await fs.readFile(rutaJSON, "utf-8");
 		const turnos = JSON.parse(data);
 		res.render("turnos", { turnos });
