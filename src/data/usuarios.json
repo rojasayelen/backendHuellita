@@ -8,22 +8,6 @@
     "tipo_usuario": "admin"
   },
   {
-    "id": 2,
-    "nombre": "Luis",
-    "apellido": "Martínez",
-    "email": "luismartinez2@gemail.com",
-    "password": "pass2*",
-    "tipo_usuario": "usuario"
-  },
-  {
-    "id": 3,
-    "nombre": "Laura",
-    "apellido": "Rodríguez",
-    "email": "laurarodriguez3@gemail.com",
-    "password": "pass3*",
-    "tipo_usuario": "usuario"
-  },
-  {
     "id": 4,
     "nombre": "Carlos",
     "apellido": "López",
@@ -94,10 +78,32 @@
     "password": "4321"
   },
   {
+    "id": 2,
+    "nombre": "Luciano",
+    "apellido": "prueba",
+    "email": "luismartinez2@gemail.com",
+    "password": "pass2*",
+    "tipo_usuario": "usuario",
+    "domicilio": "calle 1",
+    "telefono": "011 111 111"
+  },
+  {
+    "id": 3,
+    "nombre": "Laura",
+    "apellido": "apellido prueba",
+    "email": "laurarodriguez3@gemail.com",
+    "password": "pass3*",
+    "tipo_usuario": "usuario",
+    "domicilio": "calle 1",
+    "telefono": "011 111 111"
+  },
+  {
     "id": 13,
-    "nombre": "Antoni2",
-    "apellido": "Rosales",
+    "nombre": "Luciano",
+    "apellido": "madroñal",
     "email": "antonioRosales1@gmail.com",
-    "password": "4321"
+    "password": "4321",
+    "domicilio": "cale 1",
+    "telefono": "00256156415"
   }
 ]
