@@ -1,0 +1,11 @@
+doctype html
+html
+  head
+    title Eliminar Turno
+  body
+    h1 Eliminar turno
+
+    p ¿Estás seguro que querés eliminar el turno de #{turno.nombre} #{turno.apellido} para la mascota #{turno.mascota}?
+
+    form(action=`/turnos/${turno.id}?_method=DELETE` method="POST")
+      button(type="submit") Confirmar eliminación

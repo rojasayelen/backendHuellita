@@ -1,0 +1,56 @@
+doctype html
+html
+  head
+    title Crear Turno
+  body
+    h1 Crear nuevo turno
+
+    form(action="/turnos" method="POST")
+      label(for="apellido") Apellido:
+      input(type="text" name="apellido" required)
+      br
+
+      label(for="nombre") Nombre:
+      input(type="text" name="nombre" required)
+      br
+
+      label(for="dni") DNI:
+      input(type="text" name="dni" required)
+      br
+
+      label(for="mascota") Mascota:
+      input(type="text" name="mascota" required)
+      br
+
+      label(for="especie") Especie:
+      input(type="text" name="especie")
+      br
+
+      label(for="raza") Raza:
+      input(type="text" name="raza")
+      br
+
+      label(for="fecha") Fecha:
+      input(type="date" name="fecha" required)
+      br
+
+      label(for="hora") Hora:
+      input(type="time" name="hora" required)
+      br
+
+      label(for="profesional") Profesional:
+      input(type="text" name="profesional" required)
+      br
+
+      label(for="tipoConsulta") Tipo de consulta:
+      input(type="text" name="tipoConsulta")
+      br
+
+      label(for="estado") Estado del turno:
+      select(name="estado")
+        option(value="pendiente") Pendiente
+        option(value="confirmado") Confirmado
+        option(value="cancelado") Cancelado
+      br
+
+      button(type="submit") Crear turno
