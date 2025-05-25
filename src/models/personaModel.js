@@ -6,4 +6,4 @@ telefono;
 email;
 }
 
-export default Persona;
+module.exports = Persona;

@@ -1,18 +1,10 @@
-import Persona from "./personaModel";
+
+const Persona = require("./personaModel");
 
 class User extends Persona {
-  constructor(nombre, apellido, domicilio, telefono, email, username, password) {
+  constructor(nombre, apellido, domicilio, telefono, email, password) {
     super(nombre, apellido, domicilio, telefono, email);
-    this.username = username;
     this.password = password;
-  }
-
-  getUsername() {
-    return this.username;
-  }
-
-  setUsername(username) {
-    this.username = username;
   }
 
   getPassword() {
@@ -23,3 +15,5 @@ class User extends Persona {
     this.password = password;
   }
 }
+
+module.exports = User;

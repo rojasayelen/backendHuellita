@@ -3,7 +3,7 @@
     "id": 1,
     "nombre": "Ana",
     "apellido": "García",
-    "mail": "anagarcia1@gmail.com",
+    "email": "anagarcia1@gemail.com",
     "password": "pass1*",
     "tipo_usuario": "admin"
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "nombre": "Luis",
     "apellido": "Martínez",
-    "mail": "luismartinez2@gmail.com",
+    "email": "luismartinez2@gemail.com",
     "password": "pass2*",
     "tipo_usuario": "usuario"
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "nombre": "Laura",
     "apellido": "Rodríguez",
-    "mail": "laurarodriguez3@gmail.com",
+    "email": "laurarodriguez3@gemail.com",
     "password": "pass3*",
     "tipo_usuario": "usuario"
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "nombre": "Carlos",
     "apellido": "López",
-    "mail": "carloslopez4@gmail.com",
+    "email": "carloslopez4@gemail.com",
     "password": "pass4*",
     "tipo_usuario": "admin"
   },
@@ -35,7 +35,7 @@
     "id": 5,
     "nombre": "Sofía",
     "apellido": "Pérez",
-    "mail": "sofiaperez5@gmail.com",
+    "email": "sofiaperez5@gemail.com",
     "password": "pass5*",
     "tipo_usuario": "usuario"
   },
@@ -43,7 +43,7 @@
     "id": 6,
     "nombre": "Diego",
     "apellido": "Sánchez",
-    "mail": "diegosanchez6@gmail.com",
+    "email": "diegosanchez6@gemail.com",
     "password": "pass6*",
     "tipo_usuario": "usuario"
   },
@@ -51,7 +51,7 @@
     "id": 7,
     "nombre": "Valeria",
     "apellido": "Gómez",
-    "mail": "valeriagomez7@gmail.com",
+    "email": "valeriagomez7@gemail.com",
     "password": "pass7*",
     "tipo_usuario": "usuario"
   },
@@ -59,7 +59,7 @@
     "id": 8,
     "nombre": "Javier",
     "apellido": "Fernández",
-    "mail": "javierfernandez8@gmail.com",
+    "email": "javierfernandez8@gemail.com",
     "password": "pass8*",
     "tipo_usuario": "usuario"
   },
@@ -67,7 +67,7 @@
     "id": 9,
     "nombre": "Camila",
     "apellido": "Díaz",
-    "mail": "camiladiaz9@gmail.com",
+    "email": "camiladiaz9@gemail.com",
     "password": "pass9*",
     "tipo_usuario": "admin"
   },
@@ -75,7 +75,7 @@
     "id": 10,
     "nombre": "Mateo",
     "apellido": "Vázquez",
-    "mail": "mateovazquez10@gmail.com",
+    "email": "mateovazquez10@gemail.com",
     "password": "pass10*",
     "tipo_usuario": "usuario"
   },
@@ -83,7 +83,20 @@
     "id": 11,
     "nombre": "Antonia",
     "apellido": "Perez",
-    "mail": "balbla@gmail.com",
+    "email": "balbla@gemail.com",
     "password": "1234"
+  },
+  {
+    "id": 12
+  },
+  {
+    "id": 13
+  },
+  {
+    "id": 14
+  },
+  {
+    "id": 15,
+    "nombre": "luciano"
   }
 ]

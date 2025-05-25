@@ -1,10 +1,27 @@
 const fs = require("fs").promises;
 const path = require("path");
 const fileURLToPath = require('url').fileURLToPath;
+const Usuario = require("../models/userModel");
 
 
 // // Ruta del archivo JSON
 const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
+
+async function leerUsuariosDesdeArchivo() {
+    try {
+        const data = await fs.readFile(rutaJSON, "utf-8");
+        if (data) {
+            return JSON.parse(data);
+        }
+        return [];
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            return [];
+        }
+        console.error("Error crítico al leer el archivo de usuarios:", error);
+        throw new Error('Error al acceder a la base de datos de usuarios.');
+    }
+}
 
 
 const getUsuarios = async (req, res) => {
@@ -22,7 +39,7 @@ const getUsuarios = async (req, res) => {
 const postUsuarios = async (req, res) => {
     try {
         // 1. Obtener los datos del body
-        console.log(req);
+        
         const { nombre, apellido, email, password } = req.body;
 
         // 2. Validación de campos requeridos
@@ -33,20 +50,8 @@ const postUsuarios = async (req, res) => {
         }
 
         // 3. Leer usuarios existentes del archivo JSON
-        let usuarios = [];
-        try {
-            const data = await fs.readFile(rutaJSON, "utf-8");
-            if (data) {  
-                usuarios = JSON.parse(data);
-            }
-        } catch (error) {
-             
-            if (error.code !== 'ENOENT') {
-                console.error("Error al leer el archivo JSON (pero no es ENOENT):", error);
-                return res.status(500).json({ error: "Error al leer la base de datos de usuarios." });
-            }
-             
-        }
+       const usuarios = await leerUsuariosDesdeArchivo();
+        
 
         // 4. Verificar si el email ya existe
         if (usuarios.some(user => user.email === email)) {
@@ -54,27 +59,31 @@ const postUsuarios = async (req, res) => {
         }
 
         // 5. Generar un nuevo ID para el usuario
-        const nuevoId = usuarios.length > 0 ? Math.max(...usuarios.map(u => u.id)) + 1 : 1;
+        const nuevoId = usuarios.length > 0 ? Math.max(...usuarios.map(u => u.id))  + 1 : 1;
 
+        const usuario = new Usuario(nombre, apellido, email, password);
         // 6. Crear el nuevo objeto de usuario
-        const nuevoUsuario = {
+        const guardarUsuario = {
+
             id: nuevoId,
-            nombre,
-            apellido,
-            email,
-            password: password, 
-            //TO DO: agregar tipo de usuario
-            // tipo_usuario
+            nombre: usuario.nombre?? "luciano",
+            
+            apellido: usuario.apellido,
+            email: usuario.email,
+            password: usuario.password
         };
 
         // 7. Agregar el nuevo usuario al array
-        usuarios.push(nuevoUsuario);
+        usuarios.push(guardarUsuario);
 
         // 8. Escribir el array actualizado de vuelta al archivo JSON
         await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
 
         // 9. respuesta de éxito 
-        const { password: _, ...usuarioCreadoSinPassword } = nuevoUsuario; 
+        console.log('este es el body', req.body);
+        
+        const { password: _, ...usuarioCreadoSinPassword } = guardarUsuario; 
+        console.log()
         res.status(201).json({
             message: "Usuario creado exitosamente",
             usuario: usuarioCreadoSinPassword
