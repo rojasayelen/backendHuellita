@@ -69,7 +69,7 @@ const postUsuarios = async (req, res) => {
         const guardarUsuario = {
            
             id: nuevoId,
-            nombre: usuario.nombre?? "luciano",
+            nombre: usuario.nombre,
             apellido: usuario.apellido,
             email: usuario.email,
             password: usuario.password
