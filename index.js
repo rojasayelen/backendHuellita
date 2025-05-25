@@ -1,22 +1,23 @@
 const express = require("express");
 require("dotenv").config();
 const path = require("path");
-const methodOverride = require('method-override');
-
+const methodOverride = require("method-override");
 
 const app = express();
 
-app.use(express.json());//para parsear el json del body
-app.use(express.urlencoded({ extended: true }));//para leer los datos del formulario
+app.use(express.json()); //para parsear el json del body
+app.use(express.urlencoded({ extended: true })); //para leer los datos del formulario
 
-app.use(methodOverride(function (req, res) {
-  if (req.body && typeof req.body === 'object' && '_method' in req.body) {    
-    const method = req.body._method;
-    delete req.body._method;
-    return method;
-  }
-  return null;
-}));
+app.use(
+  methodOverride(function (req, res) {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      const method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+    return null;
+  })
+);
 
 //Configuración de pug y carpeta de vistas
 app.set("view engine", "pug");

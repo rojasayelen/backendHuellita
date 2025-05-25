@@ -41,7 +41,6 @@
     "tipoConsulta": "Baño",
     "estado": true
   },
-  
   {
     "id": 4,
     "apellido": "Suarez",
@@ -56,7 +55,6 @@
     "tipoConsulta": "Peluquería",
     "estado": true
   },
-  
   {
     "id": 5,
     "apellido": "Garciarena",
@@ -71,5 +69,4 @@
     "tipoConsulta": "Baño",
     "estado": false
   }
-  
 ]
