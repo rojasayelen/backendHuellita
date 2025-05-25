@@ -202,9 +202,9 @@ const loginUser = async (req, res) => {
   );
 
   if (user) {
-    return res.render("loginRespuesta", { mensaje: "Login exitoso" });
+    return res.render("loginForm", { mensaje: "Login exitoso" });
   } else {
-    return res.render("loginRespuesta", {
+    return res.render("loginForm", {
       mensaje: "Credenciales incorrectas",
     });
   }
