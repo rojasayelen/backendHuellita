@@ -11,5 +11,4 @@ telefono;
 email;
 }
 
-
 module.exports = Persona;

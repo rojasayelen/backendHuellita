@@ -20,7 +20,6 @@ const obtenerTurnosFiltrados = async (req, res) => {
 		let resultados = turnos;
 
 		// -------------------- FILTROS DE TURNOS ---------------------------
-
 		if (id) {
 			resultados = resultados.filter((turno) => String(turno.id) === id);
 		}
@@ -65,7 +64,6 @@ const obtenerTurnosFiltrados = async (req, res) => {
 		}
 
 		// --------------------- CONTROL DE ERRORES ------------------------------
-
 		if (resultados.length === 0) {
 			return res.status(404).json({
 				mensaje: "No se encontraron turnos que coincidan con la búsqueda.",
