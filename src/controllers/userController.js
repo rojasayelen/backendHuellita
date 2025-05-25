@@ -156,32 +156,36 @@ const getAdminUsuarios = async (req, res) => {
 };
 
 const deleteUsuarios = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const usuarios = await leerUsuariosDesdeArchivo();
-
-    const indiceUsuario = usuarios.findIndex(
-      (user) => user.id === parseInt(id)
-    );
-
-    if (indiceUsuario === -1) {
-      return res
-        .status(404)
-        .render("error", { error: "Usuario no encontrado" });
+    try {
+      const { id } = req.params;
+      const usuarios = await leerUsuariosDesdeArchivo(); // Assume this function exists and works
+  
+      const indiceUsuario = usuarios.findIndex(
+        (user) => user.id === parseInt(id)
+      );
+  
+      if (indiceUsuario === -1) {
+        // If user not found, re-render adminUser with an error message
+        return res.status(404).render("adminUser", { // Assuming your admin user template is named adminUser.pug
+          usuarios: usuarios, // Pass the existing users to render the table
+          error: "Usuario no encontrado",
+        });
+      }
+  
+      usuarios.splice(indiceUsuario, 1);
+  
+      await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
+  
+      res.redirect("/usuarios/admin"); // Redirect on successful deletion
+    } catch (error) {
+      console.error("Error al eliminar usuario:", error); // Add log for debugging
+      const usuarios = await leerUsuariosDesdeArchivo(); // Read users again in case of an error to render the table
+      res.status(500).render("adminUser", {
+        usuarios: usuarios, // Pass the existing users to render the table
+        error: "Error interno del servidor al eliminar usuario",
+      });
     }
-
-    usuarios.splice(indiceUsuario, 1);
-
-    await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-
-    res.redirect("/usuarios/admin");
-  } catch (error) {
-    console.error("Error al eliminar usuario:", error); // Añadir log para depuración
-    res.status(500).render("error", {
-      error: "Error interno del servidor al eliminar usuario",
-    });
-  }
-};
+  };
 
 //#region  login
 const loginForm = async (__, res) => {

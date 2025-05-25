@@ -6,13 +6,18 @@ html
       | th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
   body
     h1 Vista de Administración de Usuarios
+
+    //- Error display area
+    if error
+      p(style="color: red; font-weight: bold;")= error
+    
     table
       thead
         tr
           th ID
           th Nombre
           th Apellido
-          th Email          
+          th Email
           th Acciones
       tbody
         each usuario in usuarios
@@ -20,25 +25,17 @@ html
             td= usuario.id
             td= usuario.nombre
             td= usuario.apellido
-            td= usuario.email           
+            td= usuario.email
             td
-              div 
+              div
                 form(
                   action=`/usuarios/deleteUsuario/${usuario.id}`
                   method="POST"
                 )
                   input(type="hidden" name="_method" value="DELETE")
                   button(
-                    type="submit" 
+                    type="submit"
                     onclick=`return confirm('¿Eliminar a ${usuario.nombre}?')`
-                  ) 🗑️ Eliminar 
-              
-              //- div
-              //-   form(
-              //-   action=`/usuarios/update`
-              //-   method="GET"
-              //- )
-              //-   input(type="hidden" name="_method" value="GET")
-              //-   button(type="submit") ✍️ Modificar 
-
+                  ) 🗑️ Eliminar
+    
     a(href="/usuarios/admin") Volver a la lista general
