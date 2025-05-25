@@ -87,16 +87,17 @@
     "password": "1234"
   },
   {
-    "id": 12
+    "id": 12,
+    "nombre": "Antoni2",
+    "apellido": "Rosales",
+    "email": "antonioRosales12@gmail.com",
+    "password": "4321"
   },
   {
-    "id": 13
-  },
-  {
-    "id": 14
-  },
-  {
-    "id": 15,
-    "nombre": "luciano"
+    "id": 13,
+    "nombre": "Antoni2",
+    "apellido": "Rosales",
+    "email": "antonioRosales1@gmail.com",
+    "password": "4321"
   }
 ]

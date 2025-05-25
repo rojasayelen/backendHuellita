@@ -1,7 +1,7 @@
 const fs = require("fs").promises;
 const path = require("path");
 const fileURLToPath = require('url').fileURLToPath;
-const Usuario = require("../models/userModel");
+const User = require("../models/userModel");
 
 
 // // Ruta del archivo JSON
@@ -61,13 +61,15 @@ const postUsuarios = async (req, res) => {
         // 5. Generar un nuevo ID para el usuario
         const nuevoId = usuarios.length > 0 ? Math.max(...usuarios.map(u => u.id))  + 1 : 1;
 
-        const usuario = new Usuario(nombre, apellido, email, password);
+        const usuario = new User(nombre, apellido, email, password);
+
+        console.log('req.body', req.body);
+        console.log('usuario', usuario);
         // 6. Crear el nuevo objeto de usuario
         const guardarUsuario = {
-
+           
             id: nuevoId,
             nombre: usuario.nombre?? "luciano",
-            
             apellido: usuario.apellido,
             email: usuario.email,
             password: usuario.password

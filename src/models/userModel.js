@@ -2,10 +2,11 @@
 const Persona = require("./personaModel");
 
 class User extends Persona {
-  constructor(nombre, apellido, domicilio, telefono, email, password) {
-    super(nombre, apellido, domicilio, telefono, email);
+  constructor(nombre, apellido, email, password) {
+    super(nombre, apellido, email);
     this.password = password;
   }
+
 
   getPassword() {
     return this.password;
