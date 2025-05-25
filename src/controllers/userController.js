@@ -98,8 +98,32 @@ const postUsuarios = async (req, res) => {
     }
 }
 
-module.exports = {
-    getUsuarios,
-    postUsuarios
+
+const loginForm = async (__, res) => {
+  res.render("loginForm");
 };
 
+const loginUser = async (req, res) => {
+  const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
+  const data = await fs.readFile(rutaJSON, "utf-8");
+  const usuarios = JSON.parse(data);
+
+  const { mail, password } = req.body;
+
+  const user = usuarios.find((u) => u.mail === mail && u.password === password);
+
+  if (user) {
+    return res.render("loginRespuesta", { mensaje: "Login exitoso" });
+  } else {
+    return res.render("loginRespuesta", {
+      mensaje: "Credenciales incorrectas",
+    });
+  }
+};
+
+module.exports = {
+  getUsuarios,
+  postUsuarios,
+  loginForm,
+  loginUser,
+};
