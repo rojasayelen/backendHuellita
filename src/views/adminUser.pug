@@ -3,7 +3,7 @@ html
     title Admin Usuarios
     style
       | table { border-collapse: collapse; width: 100%; }
-      | th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+      | th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
   body
     h1 Vista de Administración de Usuarios
     
@@ -13,8 +13,7 @@ html
           th ID
           th Nombre
           th Apellido
-          th Email
-          th Tipo
+          th Email          
           th Acciones
       tbody
         each usuario in usuarios
@@ -22,8 +21,7 @@ html
             td= usuario.id
             td= usuario.nombre
             td= usuario.apellido
-            td= usuario.email
-            td= usuario.tipo_usuario 
+            td= usuario.email           
             td
               form(
                 action=`/usuarios/deleteUsuario/${usuario.id}`

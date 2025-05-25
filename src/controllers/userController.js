@@ -118,13 +118,7 @@ const deleteUsuarios = async (req, res) => {
         .status(404)
         .render("error", { error: "Usuario no encontrado" });
     }
-
-    if (usuarios[indiceUsuario].tipo_usuario === "admin") {
-      return res
-        .status(403)
-        .json({ error: "No se puede eliminar un administrador" });
-    }
-
+    
     await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
 
     res.redirect("/usuarios/admin");
