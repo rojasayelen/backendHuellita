@@ -12,11 +12,13 @@ async function leerUsuariosDesdeArchivo() {
     if (data) {
       return JSON.parse(data);
     }
+
     return [];
   } catch (error) {
     if (error.code === "ENOENT") {
       return [];
     }
+
     console.error("Error crítico al leer el archivo de usuarios:", error);
     throw new Error("Error al acceder a la base de datos de usuarios.");
   }
@@ -144,6 +146,48 @@ const updateUsuarios = async (req, res) => {
   }
 };
 
+const getAdminUsuarios = async (req, res) => {
+  try {
+    const usuarios = await leerUsuariosDesdeArchivo();
+    res.render("adminUser", { usuarios }); // Renderiza vista adminUser.pug
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error al cargar la vista de administración" });
+  }
+};
+
+const deleteUsuarios = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarios = await leerUsuariosDesdeArchivo();
+
+    const indiceUsuario = usuarios.findIndex(
+      (user) => user.id === parseInt(id)
+    );
+
+    if (indiceUsuario === -1) {
+      return res
+        .status(404)
+        .render("error", { error: "Usuario no encontrado" });
+    }
+
+    usuarios.splice(indiceUsuario, 1);
+
+    await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
+
+    res.redirect("/usuarios/admin");
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error); // Añadir log para depuración
+    res
+      .status(500)
+      .render("error", {
+        error: "Error interno del servidor al eliminar usuario",
+      });
+  }
+};
+
+//#region  login
 const loginForm = async (__, res) => {
   res.render("loginForm");
 };
@@ -167,12 +211,15 @@ const loginUser = async (req, res) => {
     });
   }
 };
+//#endregion
 
 module.exports = {
+  getAdminUsuarios,
   getUsuarios,
   postUsuarios,
   updateUserForm,
   updateUsuarios,
+  deleteUsuarios,
   loginForm,
   loginUser,
 };

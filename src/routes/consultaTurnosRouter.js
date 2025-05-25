@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const {
-	obtenerTurnosFiltrados,
-	mostrarTurnos,
+  obtenerTurnosFiltrados,
+  mostrarTurnos,
 } = require("../controllers/consultaTurnosController");
 
 router.get("/api", obtenerTurnosFiltrados);
