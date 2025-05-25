@@ -4,7 +4,7 @@ Backend para sistema de gestión para negocios de petshop y veterinaría desarro
 
 ## Descripción
 
-Alquilarte Backend es un sistema de gestión para negocios de petshop y veterinaría, desarrollado con Node.js y Express, siguiendo un patrón de arquitectura MVC (Modelo-Vista-Controlador). El proyecto forma parte de un trabajo práctico para la materia de Desarrollo Web Backend.
+Huellitas Felices Backend es un sistema de gestión para negocios de petshop y veterinaría, desarrollado con Node.js y Express, siguiendo un patrón de arquitectura MVC (Modelo-Vista-Controlador). El proyecto forma parte de un trabajo práctico para la materia de Desarrollo Web Backend.
 
 ## Información Técnica
 
@@ -24,12 +24,13 @@ backendHuellita/
 │   ├── controllers/
 │   ├── data/
 │   ├── middleware/ 
-│   │   └── errorHandler.js
 │   ├── models/
 │   ├── routes/
 │   ├── services/
 │   ├── utils/
 │   └── views/
+|__  index.js
+
 ```
 
 ## Endpoints API
@@ -38,10 +39,11 @@ backendHuellita/
 
 | Método | Ruta                | Descripción             | Parámetros de consulta | Cuerpo de solicitud         | Códigos de respuesta |
 |--------|---------------------|-------------------------|------------------------|-----------------------------|----------------------|
-| GET    | /usuarios       | Listar todos los usuarios | email (opcional)      | N/A                         | 200, 404             |
+| GET    | /usuarios       | Listar todos los usuarios | N/A      | N/A                         | 200, 404             |
 | GET    | /usuarios/:id   | Obtener usuario por ID  | N/A                   | N/A                         | 200, 404             | (Pendiente)
-| POST   | /usuarios       | Crear nuevo usuario     | N/A                   | {nombre, rol, email}        | 201, 400             |
-| DELETE | /usuarios/:id   | Eliminar usuario        | N/A                   | N/A                         | 200, 404, 400        |
+| POST   | /usuarios       | Crear nuevo usuario     | N/A                   | {nombre, apellido, email, password}        | 201, 400             |
+| DELETE | /usuarios/deleteUsuario/:id   | Eliminar usuario        | N/A                   | N/A                         | 200, 404, 400        |
+| GET | /usuarios/admin  | Lista de todos los usuarios con opción de eliminar       | N/A                   | N/A                         | 200, 404, 400        |
 
 
 ### Rutas de Vistas
@@ -49,11 +51,45 @@ backendHuellita/
 | Ruta                | Descripción                    | Método |
 |---------------------|-------------------------------|--------|
 | /usuarios           | Lista de usuarios             | GET    |
-| /usuarios/nuevo     | Formulario de nuevo usuario   | GET    |
-| /usuarios/:id       | Detalle de usuario            | GET    |
-| /usuarios/:id/editar| Formulario de edición         | GET    |
-| /auth/login         | Formulario de inicio de sesión| GET    |
-| /auth/register      | Formulario de registro        | GET    |
+| /usuarios/admin     | Lista de todos los usuarios con opción de eliminar    | GET    |
+| /usuarios/update | Formulario de edición         | PUT    |
+| /usuarios/login         | Formulario de inicio de sesión| GET    |
+| /usuarios/register      | Formulario de registro        | GET    |(pendiente)
+
+### turnos
+
+| Método | Ruta                | Descripción             | Parámetros de consulta | Cuerpo de solicitud         | Códigos de respuesta |
+|--------|---------------------|-------------------------|------------------------|-----------------------------|----------------------|
+| GET    | /turnos       | Listar todos los turnos | N/A     | N/A                         | 200, 404             |
+| GET    | /turnos/:id   | Obtener turnos por ID  | N/A                   | N/A                         | 200, 404             | 
+| POST   | /turnos       | Crear nuevo turno     | N/A                   | cliente: {
+          apellido: req.body.apellido,
+          nombre: req.body.nombre,
+          dni: req.body.dni,
+        },
+        mascota: {
+          nombre: req.body.mascota,
+          especie: req.body.especie,
+          raza: req.body.raza,
+        },
+        fecha: req.body.fecha,
+        hora: req.body.hora,
+        tipoConsulta: req.body.tipoConsulta,
+        profesional: req.body.profesional,
+        estado: req.body.estado || "pendiente"        | 201, 400             |
+| DELETE | /turnos/:id   | Eliminar turno       | N/A                   | N/A                         | 200, 404, 400        |
+| GET | /turnos/  | Lista de todos los turnos filtrados      | ?parametro=valor                  | N/A                         | 200, 404, 400        |
+| PUT | /turnos/:id  | Editar turno     | N/A                  | N/A                         | 200, 404, 400        |
+
+
+### Rutas de Vistas
+
+| Ruta                | Descripción                    | Método |
+|---------------------|-------------------------------|--------|
+| turnos/crear           | formulario para crear nuevos turnos             | POST    |
+| turnos/:id/editar     | formulario para editar un turno   | GET    |
+| /turnos | lista de turnos      | GET    |
+| /turnos/:id/eliminar/:id?_method=DELETE         | Lista actualizada de los turnos | DELETE    |
 
 ## Requisitos de Instalación y Ejecución
 
