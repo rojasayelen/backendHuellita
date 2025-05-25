@@ -158,16 +158,16 @@ const getAdminUsuarios = async (req, res) => {
 const deleteUsuarios = async (req, res) => {
     try {
       const { id } = req.params;
-      const usuarios = await leerUsuariosDesdeArchivo(); // Assume this function exists and works
+      const usuarios = await leerUsuariosDesdeArchivo();
   
       const indiceUsuario = usuarios.findIndex(
         (user) => user.id === parseInt(id)
       );
   
       if (indiceUsuario === -1) {
-        // If user not found, re-render adminUser with an error message
-        return res.status(404).render("adminUser", { // Assuming your admin user template is named adminUser.pug
-          usuarios: usuarios, // Pass the existing users to render the table
+       
+        return res.status(404).render("adminUser", { 
+          usuarios: usuarios, 
           error: "Usuario no encontrado",
         });
       }
@@ -176,12 +176,12 @@ const deleteUsuarios = async (req, res) => {
   
       await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
   
-      res.redirect("/usuarios/admin"); // Redirect on successful deletion
+      res.redirect("/usuarios/admin"); 
     } catch (error) {
-      console.error("Error al eliminar usuario:", error); // Add log for debugging
-      const usuarios = await leerUsuariosDesdeArchivo(); // Read users again in case of an error to render the table
+      console.error("Error al eliminar usuario:", error); 
+      const usuarios = await leerUsuariosDesdeArchivo(); 
       res.status(500).render("adminUser", {
-        usuarios: usuarios, // Pass the existing users to render the table
+        usuarios: usuarios, 
         error: "Error interno del servidor al eliminar usuario",
       });
     }
