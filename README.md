@@ -18,7 +18,6 @@ Alquilarte Backend es un sistema de gestión para negocios de petshop y veterina
 ## Estructura del Proyecto
 
 ```
-```
 backendHuellitas/
 ├── src/                     # Código fuente
 │   ├── app.js               # Punto de entrada de la aplicación
@@ -36,7 +35,6 @@ backendHuellitas/
 ├── .gitignore               # Archivos ignorados por Git
 ├── package.json             # Configuración y dependencias del proyecto
 └── package-lock.json        # Versiones específicas de las dependencias
-```
 ```
 
 ## Endpoints API
