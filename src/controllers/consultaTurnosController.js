@@ -54,17 +54,81 @@ module.exports = {
   // Obtener y filtrar turnos (usado por el middleware)
   obtenerTurnosFiltrados: async (req, res) => {
     try {
-      const turnos = await readTurnos();
-      const resultados = aplicarFiltros(turnos, req.query);
+      const rutaJSON = path.join(__dirname, "..", "data", "turnos.json");
+      const data = await fs.readFile(rutaJSON, "utf-8");
+      const turnos = JSON.parse(data);
 
-      if (req.accepts("json")) {
-        return res.json(resultados);
+      const {
+        id,
+        nombre,
+        apellido,
+        mascota,
+        profesional,
+        tipoConsulta,
+        fecha,
+        estado,
+      } = req.query;
+      let resultados = turnos;
+
+      // -------------------- FILTROS DE TURNOS ---------------------------
+      if (id) {
+        resultados = resultados.filter((turno) => String(turno.id) === id);
       }
 
-      res.render("turnos", { turnos: resultados });
+      if (nombre) {
+        resultados = resultados.filter((turno) =>
+          turno.nombre.toLowerCase().includes(nombre.toLowerCase())
+        );
+      }
+
+      if (apellido) {
+        resultados = resultados.filter((turno) =>
+          turno.apellido.toLowerCase().includes(apellido.toLowerCase())
+        );
+      }
+
+      if (mascota) {
+        resultados = resultados.filter((turno) =>
+          turno.mascota.toLowerCase().includes(mascota.toLowerCase())
+        );
+      }
+
+      if (profesional) {
+        resultados = resultados.filter((turno) =>
+          turno.profesional.toLowerCase().includes(profesional.toLowerCase())
+        );
+      }
+
+      if (tipoConsulta) {
+        resultados = resultados.filter((turno) =>
+          turno.tipoConsulta.toLowerCase().includes(tipoConsulta.toLowerCase())
+        );
+      }
+
+      if (fecha) {
+        resultados = resultados.filter((turno) => turno.fecha.includes(fecha));
+      }
+
+      if (estado) {
+        const estadoBool = estado === "true";
+        resultados = resultados.filter((turno) => turno.estado === estadoBool);
+      }
+
+      // --------------------- CONTROL DE ERRORES ------------------------------
+      if (resultados.length === 0) {
+        return res.status(404).render("turnosFiltered", {
+          mensaje: "No se encontraron turnos que coincidan con la búsqueda.",
+        });
+      }
+
+      res.render("turnosFiltered", { turnos: resultados });
     } catch (error) {
-      console.error("Error al filtrar turnos:", error);
-      res.status(500).json({ error: "Error al filtrar turnos" });
+      console.error("Error al obtener turnos:", error);
+      res
+        .status(500)
+        .render("turnosFiltered", {
+          mensaje: "Error al procesar la solicitud",
+        });
     }
   },
 

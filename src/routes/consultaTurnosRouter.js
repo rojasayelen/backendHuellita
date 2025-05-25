@@ -7,6 +7,7 @@ const {
   obtenerTurno,
   mostrarFormularioEdicion,
   mostrarConfirmacionEliminar,
+  obtenerTurnosFiltrados
 } = require("../controllers/consultaTurnosController");
 const manejarConsultaTurnos = require("../middleware/filtroTurnos");
 
@@ -22,5 +23,6 @@ router.post("/", crearTurno);
 router.get("/:id", obtenerTurno);
 router.put("/:id", editarTurno);
 router.delete("/:id", eliminarTurno);
+router.get("/", obtenerTurnosFiltrados);
 
 module.exports = router;
