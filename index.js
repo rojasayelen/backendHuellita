@@ -1,7 +1,7 @@
 const express = require("express");
+const methodOverride = require('method-override');
 require("dotenv").config();
 const path = require("path");
-const methodOverride = require("method-override");
 
 const app = express();
 
@@ -19,25 +19,30 @@ app.use(
   })
 );
 
-//Configuración de pug y carpeta de vistas
+// Configuración de pug y carpeta de vistas
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "src/views"));
 
-// Determinacion del puerto del servidor
+// Determinación del puerto del servidor
 const port = process.env.PORT || 3000;
 
-//Definicion del servidor. ruta base de prueba
+// Ruta base de prueba
 app.get("/", (req, res) => {
-  res.send("Hola Mundo");
+	res.send("Hola Mundo");
 });
 
-// Importar el archivo de rutas de turnos
+// Importar routers
 const consultaTurnosRouter = require("./src/routes/consultaTurnosRouter");
 const getUsuarios = require("./src/routes/userRoute");
 
+// Usar routers
 app.use("/turnos", consultaTurnosRouter);
 app.use("/usuarios", getUsuarios);
 
+const errorHandler = require('./src/middleware/errorHandler');
+app.use(errorHandler);
+
+// Iniciar servidor
 app.listen(port, () => {
   console.log(`Server corriendo en http://localhost:${port}`);
 });

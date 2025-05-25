@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title Editar Turno
+  body
+    h1 Editar turno
+    a(href=`/turnos/${turno.id}`) Volver al detalle
+
+    form(action=`/turnos/${turno.id}?_method=PUT` method="POST")
+      // Campos del formulario igual que crearTurnos.pug
+      // pero con values precargados
+      button(type="submit") Guardar cambios
+      a(href=`/turnos/${turno.id}`) Cancelar

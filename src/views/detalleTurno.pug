@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title Detalle de Turno
+  body
+    h1 Detalle del Turno ##{turno.id}
+    
+    p Cliente: #{turno.nombre} #{turno.apellido}
+    p DNI: #{turno.dni}
+    p Mascota: #{turno.mascota} (#{turno.especie}, #{turno.raza})
+    p Fecha: #{turno.fecha} a las #{turno.hora}
+    p Profesional: #{turno.profesional}
+    p Tipo: #{turno.tipoConsulta}
+    p Estado: #{turno.estado}
+    
+    div
+      a(href=`/turnos/${turno.id}/editar`) Editar
+      form(action=`/turnos/${turno.id}?_method=DELETE` method="POST" style="display: inline; margin-left: 10px")
+        button(type="submit") Eliminar
+      a(href="/turnos" style="margin-left: 10px") Volver al listado
