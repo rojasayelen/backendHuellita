@@ -26,7 +26,8 @@
   {
     "id": 4,
     "nombre": "Carlos",
-	@@ -31,73 +15,12 @@
+    "apellido": "López",
+    "email": "carloslopez4@gemail.com",
     "password": "pass4*",
     "tipo_usuario": "admin"
   },
