@@ -4,8 +4,8 @@ const path = require("path");
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json());//para parsear el json del body
+app.use(express.urlencoded({ extended: true }));//para leer los datos del formulario
 
 //Configuración de pug y carpeta de vistas
 app.set("view engine", "pug");
