@@ -62,21 +62,7 @@ backendHuellita/
 |--------|---------------------|-------------------------|------------------------|-----------------------------|----------------------|
 | GET    | /turnos       | Listar todos los turnos | N/A     | N/A                         | 200, 404             |
 | GET    | /turnos/:id   | Obtener turnos por ID  | N/A                   | N/A                         | 200, 404             | 
-| POST   | /turnos       | Crear nuevo turno     | N/A                   | cliente: {
-          apellido: req.body.apellido,
-          nombre: req.body.nombre,
-          dni: req.body.dni,
-        },
-        mascota: {
-          nombre: req.body.mascota,
-          especie: req.body.especie,
-          raza: req.body.raza,
-        },
-        fecha: req.body.fecha,
-        hora: req.body.hora,
-        tipoConsulta: req.body.tipoConsulta,
-        profesional: req.body.profesional,
-        estado: req.body.estado || "pendiente"        | 201, 400             |
+| POST   | /turnos       | Crear nuevo turno     | N/A                   | cliente(apellido,nombre,dni) mascota(nombre,especie,raza) fecha, hora, tipoConsulta, profesional, estado        | 201, 400             |
 | DELETE | /turnos/:id   | Eliminar turno       | N/A                   | N/A                         | 200, 404, 400        |
 | GET | /turnos/  | Lista de todos los turnos filtrados      | ?parametro=valor                  | N/A                         | 200, 404, 400        |
 | PUT | /turnos/:id  | Editar turno     | N/A                  | N/A                         | 200, 404, 400        |
