@@ -13,7 +13,7 @@ Huellitas Felices Backend es un sistema de gestión para negocios de petshop y v
 - **Almacenamiento de datos:** Archivos JSON  
 - **Motor de plantillas:** Pug  
 - **Versión actual:** 1.0.0  
-- **Puerto del servidor:** 5050  
+- **Puerto del servidor:** 3000  
 
 ## Estructura del Proyecto
 
