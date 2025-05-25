@@ -5,6 +5,7 @@ const path = require("path");
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //Configuración de pug y carpeta de vistas
 app.set("view engine", "pug");
