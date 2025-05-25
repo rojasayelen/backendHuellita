@@ -2,7 +2,6 @@ const express = require("express");
 const methodOverride = require('method-override');
 require("dotenv").config();
 const path = require("path");
-const methodOverride = require("method-override");
 
 const app = express();
 

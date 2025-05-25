@@ -38,19 +38,11 @@ backendHuellita/
 
 | Método | Ruta                | Descripción             | Parámetros de consulta | Cuerpo de solicitud         | Códigos de respuesta |
 |--------|---------------------|-------------------------|------------------------|-----------------------------|----------------------|
-| GET    | /api/usuarios       | Listar todos los usuarios | email (opcional)      | N/A                         | 200, 404             |
-| GET    | /api/usuarios/:id   | Obtener usuario por ID  | N/A                   | N/A                         | 200, 404             |
-| POST   | /api/usuarios       | Crear nuevo usuario     | N/A                   | {nombre, rol, email}        | 201, 400             |
-| DELETE | /api/usuarios/:id   | Eliminar usuario        | N/A                   | N/A                         | 200, 404, 400        |
+| GET    | /usuarios       | Listar todos los usuarios | email (opcional)      | N/A                         | 200, 404             |
+| GET    | /usuarios/:id   | Obtener usuario por ID  | N/A                   | N/A                         | 200, 404             | (Pendiente)
+| POST   | /usuarios       | Crear nuevo usuario     | N/A                   | {nombre, rol, email}        | 201, 400             |
+| DELETE | /usuarios/:id   | Eliminar usuario        | N/A                   | N/A                         | 200, 404, 400        |
 
-### Propiedades
-
-| Ruta                      | Descripción                  | Método |
-|---------------------------|------------------------------|--------|
-| /propiedades              | Lista de propiedades         | GET    |
-| /propiedades/nueva        | Formulario de nueva propiedad| GET    |
-| /propiedades/:id          | Detalle de propiedad         | GET    |
-| /propiedades/:id/editar   | Formulario de edición        | GET    |
 
 ### Rutas de Vistas
 

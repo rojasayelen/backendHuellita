@@ -1,6 +1,5 @@
 const fs = require("fs").promises;
 const path = require("path");
-const aplicarFiltros = require("../utils/filtrosTurnos");
 const Turno = require("../models/turnoModel");
 
 const TURNOS_JSON = path.join(__dirname, "..", "data", "turnos.json");
