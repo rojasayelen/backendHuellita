@@ -1,29 +1,29 @@
 [
   {
     "id": 1,
-    "apellido": "García",
-    "nombre": "Ana",
+    "apellido": "Solís",
+    "nombre": "Andrea",
     "dni": "30222333",
     "mascota": "Rex",
     "especie": "perro",
     "raza": "pastor alemán",
     "fecha": "2025-05-27",
     "hora": "14:00",
-    "profesional": "Dr. Fernández",
+    "profesional": "Carlos Lopez",
     "tipoConsulta": "Vacunación",
     "estado": true
   },
   {
     "id": 2,
     "apellido": "López",
-    "nombre": "Carlos",
+    "nombre": "Andrés",
     "dni": "29555111",
     "mascota": "Michi",
     "especie": "gato",
     "raza": "siamés",
     "fecha": "2025-05-30",
     "hora": "09:30",
-    "profesional": "Dr. Fernández",
+    "profesional": "Carlos Lopez",
     "tipoConsulta": "Chequeo general",
     "estado": true
   },
@@ -37,7 +37,7 @@
     "raza": "labrador",
     "fecha": "2025-06-02",
     "hora": "11:00",
-    "profesional": "Juan Pérez",
+    "profesional": "Luis Martínez",
     "tipoConsulta": "Baño",
     "estado": true
   },
@@ -52,7 +52,7 @@
     "raza": "caniche",
     "fecha": "2025-06-02",
     "hora": "14:00",
-    "profesional": "Roxana Gonzalez",
+    "profesional": "Ana García",
     "tipoConsulta": "Peluquería",
     "estado": true
   },
@@ -67,7 +67,7 @@
     "raza": "egipcio",
     "fecha": "2025-06-03",
     "hora": "14:00",
-    "profesional": "Juan Pérez",
+    "profesional": "Luis Martínez",
     "tipoConsulta": "Baño",
     "estado": false
   }

@@ -6,6 +6,41 @@ const app = express();
 
 app.use(express.json());
 
+// Configuración de pug y carpeta de vistas
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "src/views"));
+
+// Determinación del puerto del servidor
+const port = process.env.PORT || 3000;
+
+// Ruta base de prueba
+app.get("/", (req, res) => {
+	res.send("Hola Mundo");
+});
+
+// Importar routers
+const consultaTurnosRouter = require("./src/routes/consultaTurnosRouter");
+const getUsuarios = require("./src/routes/userRoute");
+const postUsuarios = require("./src/routes/userRoute");
+
+// Usar routers
+app.use("/turnos", consultaTurnosRouter);
+app.use("/usuarios", getUsuarios);
+app.use("/registroUser", postUsuarios);
+
+// Iniciar servidor
+app.listen(port, () => {
+	console.log(`Server corriendo en http://localhost:${port}`);
+});
+
+/*const express = require("express");
+require("dotenv").config();
+const path = require("path");
+
+const app = express();
+
+app.use(express.json());
+
 //Configuración de pug y carpeta de vistas
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "src/views"));
@@ -30,3 +65,4 @@ app.use("/registroUser", postUsuarios);
 app.listen(port, () => {
   console.log(`Server corriendo en http://localhost:${port}`);
 });
+*/

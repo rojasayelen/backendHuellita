@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "apellido": "García",
+    "nombre": "Ana",
+    "dni": "30222333",
+    "mascotas": [
+      {
+        "nombre": "Rex",
+        "especie": "perro",
+        "raza": "pastor alemán"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "apellido": "López",
+    "nombre": "Carlos",
+    "dni": "29555111",
+    "mascotas": [
+      {
+        "nombre": "Michi",
+        "especie": "gato",
+        "raza": "siamés"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "apellido": "Bianchi",
+    "nombre": "Gonzalo",
+    "dni": "28444888",
+    "mascotas": [
+      {
+        "nombre": "Toby",
+        "especie": "perro",
+        "raza": "labrador"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "apellido": "Suarez",
+    "nombre": "Paz",
+    "dni": "29999999",
+    "mascotas": [
+      {
+        "nombre": "Rod",
+        "especie": "perro",
+        "raza": "caniche"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "apellido": "Garciarena",
+    "nombre": "Julián",
+    "dni": "29999991",
+    "mascotas": [
+      {
+        "nombre": "Rodo",
+        "especie": "gato",
+        "raza": "egipcio"
+      }
+    ]
+  }
+]
