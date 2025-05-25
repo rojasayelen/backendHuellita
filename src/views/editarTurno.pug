@@ -1,0 +1,108 @@
+doctype html
+html
+  head
+    title Editar Turno - Huellitas Felices
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #2c3e50;
+      }
+      form {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      input, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin-top: 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #2980b9;
+      }
+      .actions {
+        margin-top: 20px;
+      }
+      .actions a {
+        margin-left: 10px;
+        color: #3498db;
+        text-decoration: none;
+      }
+  body
+    h1 Editar Turno ##{turno.id}
+    a(href="/turnos") ← Volver al listado
+
+    form(action=`/turnos/${turno.id}?_method=PUT` method="POST")
+      // Datos del Cliente
+      fieldset
+        legend Datos del Cliente
+        label(for="apellido") Apellido:
+        input(type="text" name="apellido" value=turno.apellido required)
+        
+        label(for="nombre") Nombre:
+        input(type="text" name="nombre" value=turno.nombre required)
+        
+        label(for="dni") DNI:
+        input(type="text" name="dni" value=turno.dni required)
+
+      // Datos de la Mascota
+      fieldset
+        legend Datos de la Mascota
+        label(for="mascota") Nombre:
+        input(type="text" name="mascota" value=turno.mascota required)
+        
+        label(for="especie") Especie:
+        input(type="text" name="especie" value=turno.especie)
+        
+        label(for="raza") Raza:
+        input(type="text" name="raza" value=turno.raza)
+
+      // Datos del Turno
+      fieldset
+        legend Datos del Turno
+        label(for="fecha") Fecha:
+        input(type="date" name="fecha" value=turno.fecha required)
+        
+        label(for="hora") Hora:
+        input(type="time" name="hora" value=turno.hora required)
+        
+        label(for="profesional") Profesional:
+        input(type="text" name="profesional" value=turno.profesional required)
+        
+        label(for="tipoConsulta") Tipo de Consulta:
+        input(type="text" name="tipoConsulta" value=turno.tipoConsulta)
+        
+        label(for="estado") Estado del Turno:
+        select(name="estado")
+          option(value="pendiente" selected=turno.estado==="pendiente") Pendiente
+          option(value="confirmado" selected=turno.estado==="confirmado") Confirmado
+          option(value="cancelado" selected=turno.estado==="cancelado") Cancelado
+          option(value="completado" selected=turno.estado==="completado") Completado
+
+      .actions
+        button(type="submit") Guardar Cambios
+        a(href=`/turnos/${turno.id}`) Cancelar

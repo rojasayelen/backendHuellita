@@ -1,0 +1,27 @@
+html
+  head
+    title usuario modificado
+    style
+      | table { border-collapse: collapse; width: 100%; }
+      | th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  body
+    if !usuario
+      h3 Error:
+      p= mensaje
+    
+    if usuario
+      h3 Usuario modificado:
+      table
+        thead
+          tr
+            th ID
+            th Nombre
+            th Apellido
+            th Email            
+        tbody
+          tr
+            td= usuario.id
+            td= usuario.nombre
+            td= usuario.apellido
+            td= usuario.email
+          

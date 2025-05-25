@@ -1,0 +1,18 @@
+html
+  head
+    title Usuario
+  body
+    h1 Modificar usuario
+    form(action="/usuarios/update" method="POST")
+      input(type="hidden" name="_method" value="PUT") 
+      label(for="nombre") Nombre:   
+      input(type="text" name="nombre" required)
+      br
+      label(for="apellido") Apellido:
+      input(type="text" name="apellido" required)
+      br   
+      label(for="email") Email:
+      input(type="text" name="email" required)
+      br      
+      button(type="submit") Ingresar
+  
