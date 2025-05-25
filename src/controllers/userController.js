@@ -105,26 +105,26 @@ const getAdminUsuarios = async (req, res) => {
 };
 
 const deleteUsuarios = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const usuarios = await leerUsuariosDesdeArchivo();
+    try {
+        const { id } = req.params;
+        const usuarios = await leerUsuariosDesdeArchivo();
 
-    const indiceUsuario = usuarios.findIndex(
-      (user) => user.id === parseInt(id)
-    );
+        const indiceUsuario = usuarios.findIndex(user => user.id === parseInt(id));
 
-    if (indiceUsuario === -1) {
-      return res
-        .status(404)
-        .render("error", { error: "Usuario no encontrado" });
-    }
+        if (indiceUsuario === -1) {
+            return res.status(404).render('error', { error: "Usuario no encontrado" });
+        }
     
-    await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
+        usuarios.splice(indiceUsuario, 1);
 
-    res.redirect("/usuarios/admin");
-  } catch (error) {
-    res.status(500).render("error", { error: "Error interno del servidor" });
-  }
+        await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
+
+        res.redirect("/usuarios/admin");
+
+    } catch (error) {
+        console.error("Error al eliminar usuario:", error); // Añadir log para depuración
+        res.status(500).render('error', { error: "Error interno del servidor al eliminar usuario" });
+    }
 };
 
 //#region  login
