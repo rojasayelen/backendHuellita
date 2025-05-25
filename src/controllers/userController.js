@@ -103,12 +103,12 @@ const updateUserForm = async (__, res) => {
 
 const updateUsuarios = async (req, res) => {
   try {
-    const { nombre, apellido, domicilio, telefono, email } = req.body;
+    const { nombre, apellido, email } = req.body;
 
-    if (!nombre || !apellido || !domicilio || !telefono) {
+    if (!nombre || !apellido) {
       return res.render("updateUserResponse", {
         mensaje:
-          "Todos los campos son queredidos: nombre, apellido, domicilio, telefono.",
+          "Todos los campos son queredidos: nombre, apellido.",
       });
       s;
     }
@@ -124,9 +124,7 @@ const updateUsuarios = async (req, res) => {
     }
 
     currentUser.nombre = nombre;
-    currentUser.apellido = apellido;
-    currentUser.domicilio = domicilio;
-    currentUser.telefono = telefono;
+    currentUser.apellido = apellido;   
 
     const newUsuarios = usuarios.filter((user) => user.id !== currentUser.id);
 

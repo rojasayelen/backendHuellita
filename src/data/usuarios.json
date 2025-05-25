@@ -1,12 +1,5 @@
 [
   {
-    "id": 9,
-    "nombre": "Camila",
-    "apellido": "Díaz",
-    "email": "camiladiaz9@gemail.com",
-    "password": "pass9*"
-  },
-  {
     "id": 13,
     "nombre": "luciano",
     "apellido": "asjkn",
@@ -23,5 +16,12 @@
     "password": "4321",
     "domicilio": "ouyg",
     "telefono": "65219654654"
+  },
+  {
+    "id": 9,
+    "nombre": "123123",
+    "apellido": "1212212",
+    "email": "camiladiaz9@gemail.com",
+    "password": "pass9*"
   }
 ]
