@@ -118,12 +118,19 @@ const deleteUsuarios = async (req, res) => {
         .status(404)
         .render("error", { error: "Usuario no encontrado" });
     }
-    
+   
+    usuarios.splice(indiceUsuario, 1); 
+
     await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
 
     res.redirect("/usuarios/admin");
   } catch (error) {
-    res.status(500).render("error", { error: "Error interno del servidor" });
+    console.error("Error al eliminar usuario:", error); // Añadir log para depuración
+    res
+      .status(500)
+      .render("error", {
+        error: "Error interno del servidor al eliminar usuario",
+      });
   }
 };
 
