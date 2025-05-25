@@ -63,8 +63,7 @@ const postUsuarios = async (req, res) => {
 
         const usuario = new User(nombre, apellido, email, password);
 
-        console.log('req.body', req.body);
-        console.log('usuario', usuario);
+    
         // 6. Crear el nuevo objeto de usuario
         const guardarUsuario = {
            
@@ -82,10 +81,10 @@ const postUsuarios = async (req, res) => {
         await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
 
         // 9. respuesta de éxito 
-        console.log('este es el body', req.body);
+        
         
         const { password: _, ...usuarioCreadoSinPassword } = guardarUsuario; 
-        console.log()
+        
         res.status(201).json({
             message: "Usuario creado exitosamente",
             usuario: usuarioCreadoSinPassword
@@ -108,9 +107,9 @@ const loginUser = async (req, res) => {
   const data = await fs.readFile(rutaJSON, "utf-8");
   const usuarios = JSON.parse(data);
 
-  const { mail, password } = req.body;
+  const { email, password } = req.body;
 
-  const user = usuarios.find((u) => u.mail === mail && u.password === password);
+  const user = usuarios.find((u) => u.email === email && u.password === password);
 
   if (user) {
     return res.render("loginRespuesta", { mensaje: "Login exitoso" });
