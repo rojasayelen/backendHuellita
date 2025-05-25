@@ -5,8 +5,7 @@ const {
   mostrarTurnos,
 } = require("../controllers/consultaTurnosController");
 
-router.get("/api", obtenerTurnosFiltrados);
-
+router.get("/", obtenerTurnosFiltrados);
 router.get("/", mostrarTurnos);
 
 module.exports = router;

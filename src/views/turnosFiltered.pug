@@ -1,0 +1,44 @@
+html
+  head
+    title Turnos filtrados
+    style
+      | table { border-collapse: collapse; width: 100%; }
+      | th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  body
+    if !turnos
+      h3 Error:
+      p= mensaje
+    
+    if turnos
+      h3 Turnos filtrados:
+      
+      table
+        thead
+          tr
+            th ID
+            th Apellido
+            th Nombre
+            th DNI
+            th Mascota
+            th Especie
+            th Raza
+            th Fecha
+            th Hora
+            th Profesional
+            th TipoConsulta
+            th Estado
+        tbody
+          each turno in turnos
+            tr
+              td= turno.id
+              td= turno.apellido
+              td= turno.nombre
+              td= turno.dni
+              td= turno.mascota
+              td= turno.especie
+              td= turno.raza
+              td= turno.fecha
+              td= turno.hora
+              td= turno.profesional
+              td= turno.tipoConsulta
+              td= turno.estado

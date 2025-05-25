@@ -3,7 +3,7 @@ const path = require("path");
 
 const obtenerTurnosFiltrados = async (req, res) => {
   try {
-    const rutaJSON = path.join(__dirname, "..", "..", "data", "turnos.json");
+    const rutaJSON = path.join(__dirname, "..", "data", "turnos.json");
     const data = await fs.readFile(rutaJSON, "utf-8");
     const turnos = JSON.parse(data);
 
@@ -28,6 +28,7 @@ const obtenerTurnosFiltrados = async (req, res) => {
       resultados = resultados.filter((turno) =>
         turno.nombre.toLowerCase().includes(nombre.toLowerCase())
       );
+      throw new Error("Error al mostrar los turnos");
     }
 
     if (apellido) {
@@ -65,15 +66,17 @@ const obtenerTurnosFiltrados = async (req, res) => {
 
     // --------------------- CONTROL DE ERRORES ------------------------------
     if (resultados.length === 0) {
-      return res.status(404).json({
+      return res.status(404).render("turnosFiltered", {
         mensaje: "No se encontraron turnos que coincidan con la búsqueda.",
       });
     }
 
-    res.json(resultados);
+    res.render("turnosFiltered", { turnos: resultados });
   } catch (error) {
     console.error("Error al obtener turnos:", error);
-    res.status(500).json({ error: "Error al procesar la solicitud" });
+    res
+      .status(500)
+      .render("turnosFiltered", { mensaje: "Error al procesar la solicitud" });
   }
 };
 
