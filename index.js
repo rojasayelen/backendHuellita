@@ -34,13 +34,9 @@ app.get("/", (req, res) => {
 // Importar el archivo de rutas de turnos
 const consultaTurnosRouter = require("./src/routes/consultaTurnosRouter");
 const getUsuarios = require("./src/routes/userRoute");
-const postUsuarios = require("./src/routes/userRoute");
-const deleteUsuarios = require("./src/routes/userRoute");
 
 app.use("/turnos", consultaTurnosRouter);
 app.use("/usuarios", getUsuarios);
-app.use("/registroUser", postUsuarios);
-app.use("/deleteUser", deleteUsuarios);
 
 app.listen(port, () => {
   console.log(`Server corriendo en http://localhost:${port}`);

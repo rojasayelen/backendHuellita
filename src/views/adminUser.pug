@@ -6,7 +6,6 @@ html
       | th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
   body
     h1 Vista de Administración de Usuarios
-    
     table
       thead
         tr
@@ -23,14 +22,23 @@ html
             td= usuario.apellido
             td= usuario.email           
             td
-              form(
-                action=`/usuarios/deleteUsuario/${usuario.id}`
-                method="POST"
-              )
-                input(type="hidden" name="_method" value="DELETE")
-                button.btn-eliminar(
-                  type="submit" 
-                  onclick=`return confirm('¿Eliminar a ${usuario.nombre}?')`
-                ) 🗑️ Eliminar
+              div 
+                form(
+                  action=`/usuarios/deleteUsuario/${usuario.id}`
+                  method="POST"
+                )
+                  input(type="hidden" name="_method" value="DELETE")
+                  button(
+                    type="submit" 
+                    onclick=`return confirm('¿Eliminar a ${usuario.nombre}?')`
+                  ) 🗑️ Eliminar 
+              
+              //- div
+              //-   form(
+              //-   action=`/usuarios/update`
+              //-   method="GET"
+              //- )
+              //-   input(type="hidden" name="_method" value="GET")
+              //-   button(type="submit") ✍️ Modificar 
 
     a(href="/usuarios/admin") Volver a la lista general

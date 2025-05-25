@@ -3,8 +3,9 @@ html
     title Usuario
   body
     h1 Modificar usuario
-    form(action="/usuarios/update" method="PUT")
-      label(for="nombre") Nombre: 
+    form(action="/usuarios/update" method="POST")
+      input(type="hidden" name="_method" value="PUT") 
+      label(for="nombre") Nombre:   
       input(type="text" name="nombre" required)
       br
       label(for="apellido") Apellido:

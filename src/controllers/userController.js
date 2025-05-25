@@ -179,11 +179,9 @@ const deleteUsuarios = async (req, res) => {
     res.redirect("/usuarios/admin");
   } catch (error) {
     console.error("Error al eliminar usuario:", error); // Añadir log para depuración
-    res
-      .status(500)
-      .render("error", {
-        error: "Error interno del servidor al eliminar usuario",
-      });
+    res.status(500).render("error", {
+      error: "Error interno del servidor al eliminar usuario",
+    });
   }
 };
 
