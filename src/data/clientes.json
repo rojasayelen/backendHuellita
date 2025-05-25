@@ -2,7 +2,7 @@
   {
     "id": 1,
     "apellido": "García",
-    "nombre": "Ana",
+    "nombre": "Andrea",
     "dni": "30222333",
     "mascotas": [
       {
@@ -15,7 +15,7 @@
   {
     "id": 2,
     "apellido": "López",
-    "nombre": "Carlos",
+    "nombre": "Andrés",
     "dni": "29555111",
     "mascotas": [
       {
