@@ -22,4 +22,5 @@ router.put("/update", updateUsuarios);
 router.get("/login", loginForm);
 router.post("/login", loginUser);
 
+
 module.exports = router; // <-- Exportas el enrutador completo

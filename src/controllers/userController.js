@@ -12,13 +12,11 @@ async function leerUsuariosDesdeArchivo() {
     if (data) {
       return JSON.parse(data);
     }
-
     return [];
   } catch (error) {
     if (error.code === "ENOENT") {
       return [];
     }
-
     console.error("Error crítico al leer el archivo de usuarios:", error);
     throw new Error("Error al acceder a la base de datos de usuarios.");
   }
@@ -38,8 +36,8 @@ const getUsuarios = async (req, res) => {
 
 const postUsuarios = async (req, res) => {
   try {
+   
     // 1. Obtener los datos del body
-
     const { nombre, apellido, email, password } = req.body;
 
     // 2. Validación de campos requeridos
@@ -62,8 +60,7 @@ const postUsuarios = async (req, res) => {
 
     // 5. Generar un nuevo ID para el usuario
     const nuevoId =
-      usuarios.length > 0 ? Math.max(...usuarios.map((u) => u.id)) + 1 : 1;
-
+    usuarios.length > 0 ? Math.max(...usuarios.map((u) => u.id)) + 1 : 1;
     const usuario = new User(nombre, apellido, email, password);
 
     // 6. Crear el nuevo objeto de usuario
@@ -82,9 +79,7 @@ const postUsuarios = async (req, res) => {
     await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
 
     // 9. respuesta de éxito
-
     const { password: _, ...usuarioCreadoSinPassword } = guardarUsuario;
-
     res.status(201).json({
       message: "Usuario creado exitosamente",
       usuario: usuarioCreadoSinPassword,
