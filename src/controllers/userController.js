@@ -1,212 +1,88 @@
-const fs = require("fs").promises;
-const path = require("path");
-const fileURLToPath = require("url").fileURLToPath;
-const User = require("../models/userModel");
-
-// // Ruta del archivo JSON
-const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-
-// async function leerUsuariosDesdeArchivo() {
-//   try {
-//     const data = await fs.readFile(rutaJSON, "utf-8");
-//     if (data) {
-//       return JSON.parse(data);
-//     }
-//     return [];
-//   } catch (error) {
-//     if (error.code === "ENOENT") {
-//       return [];
-//     }
-//     console.error("Error crítico al leer el archivo de usuarios:", error);
-//     throw new Error("Error al acceder a la base de datos de usuarios.");
-//   }
-// }
+const userService = require("../services/userService.js");
 
 const getUsuarios = async (req, res) => {
   try {
-    const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-    const data = await fs.readFile(rutaJSON, "utf-8");
-    const usuarios = JSON.parse(data);
+    const usuarios = await userService.getAll();
     res.render("usuarios", { usuarios });
   } catch (error) {
-    console.error("Error al leer el archivo JSON:", error);
+    console.error(error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
 const postUsuarios = async (req, res) => {
   try {
-   
-    // 1. Obtener los datos del body
     const { nombre, apellido, email, password } = req.body;
-
-    // 2. Validación de campos requeridos
     if (!nombre || !apellido || !email || !password) {
-      return res.status(400).json({
-        error:
-          "Todos los campos son requeridos: nombre, apellido, mail, password.",
-      });
+      return res.status(400).json({ error: "Todos los campos son requeridos." });
     }
-
-    // 3. Leer usuarios existentes del archivo JSON
-    const usuarios = await leerUsuariosDesdeArchivo();
-
-    // 4. Verificar si el email ya existe
-    if (usuarios.some((user) => user.email === email)) {
-      return res
-        .status(400)
-        .json({ error: `El email '${email}' ya está registrado.` });
-    }
-
-    // 5. Generar un nuevo ID para el usuario
-    const nuevoId =
-    usuarios.length > 0 ? Math.max(...usuarios.map((u) => u.id)) + 1 : 1;
-    const usuario = new User(nombre, apellido, email, password);
-
-    // 6. Crear el nuevo objeto de usuario
-    const guardarUsuario = {
-      id: nuevoId,
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
-      email: usuario.email,
-      password: usuario.password,
-    };
-
-    // 7. Agregar el nuevo usuario al array
-    usuarios.push(guardarUsuario);
-
-    // 8. Escribir el array actualizado de vuelta al archivo JSON
-    await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-
-    // 9. respuesta de éxito
-    const { password: _, ...usuarioCreadoSinPassword } = guardarUsuario;
-    res.status(201).json({
-      message: "Usuario creado exitosamente",
-      usuario: usuarioCreadoSinPassword,
-    });
+    const nuevoUsuario = await userService.create(req.body);
+    res.status(201).json({ message: "Usuario creado exitosamente", usuario: nuevoUsuario });
   } catch (error) {
-    console.error("Error en la función postUsuarios:", error);
-    res
-      .status(500)
-      .json({ error: "Error interno del servidor al procesar la solicitud." });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
 
-const updateUserForm = async (__, res) => {
+const updateUserForm = (req, res) => {
   res.render("updateUserForm");
 };
 
 const updateUsuarios = async (req, res) => {
-  try {
-    const { nombre, apellido, email } = req.body;
-
-    if (!nombre || !apellido) {
-      return res.render("updateUserResponse", {
-        mensaje:
-          "Todos los campos son queredidos: nombre, apellido.",
-      });
-      s;
+    try {
+        const { nombre, apellido, email } = req.body;
+        if (!nombre || !apellido || !email) {
+            return res.render("updateUserResponse", { mensaje: "Nombre, apellido y email son requeridos." });
+        }
+        const usuarioActualizado = await userService.updateByEmail(email, { nombre, apellido });
+        if (!usuarioActualizado) {
+            return res.render("updateUserResponse", { mensaje: "Usuario inexistente." });
+        }
+        return res.render("updateUserResponse", { usuario: usuarioActualizado });
+    } catch (error) {
+        return res.render("updateUserResponse", { mensaje: "Error interno del servidor." });
     }
-
-    const usuarios = await leerUsuariosDesdeArchivo();
-
-    currentUser = usuarios.find((user) => user.email === email);
-
-    if (!currentUser) {
-      return res.render("updateUserResponse", {
-        mensaje: "Usuario inexistente",
-      });
-    }
-
-    currentUser.nombre = nombre;
-    currentUser.apellido = apellido;   
-
-    const newUsuarios = usuarios.filter((user) => user.id !== currentUser.id);
-
-    newUsuarios.push(currentUser);
-
-    await fs.writeFile(rutaJSON, JSON.stringify(newUsuarios, null, 2), "utf-8");
-
-    const { password: _, ...usuarioCreadoSinPassword } = currentUser;
-
-    return res.render("updateUserResponse", {
-      usuario: usuarioCreadoSinPassword,
-    });
-  } catch (error) {
-    return res.render("updateUserResponse", {
-      mensaje: "Error en interno del servidor",
-    });
-  }
 };
 
 const getAdminUsuarios = async (req, res) => {
   try {
-    const usuarios = await leerUsuariosDesdeArchivo();
-    res.render("adminUser", { usuarios }); // Renderiza vista adminUser.pug
+    const usuarios = await userService.getAll();
+    res.render("adminUser", { usuarios });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error al cargar la vista de administración" });
+    res.status(500).json({ error: "Error al cargar la vista de administración." });
   }
 };
 
 const deleteUsuarios = async (req, res) => {
     try {
-      const { id } = req.params;
-      const usuarios = await leerUsuariosDesdeArchivo();
-  
-      const indiceUsuario = usuarios.findIndex(
-        (user) => user.id === parseInt(id)
-      );
-  
-      if (indiceUsuario === -1) {
-       
-        return res.status(404).render("adminUser", { 
-          usuarios: usuarios, 
-          error: "Usuario no encontrado",
-        });
-      }
-  
-      usuarios.splice(indiceUsuario, 1);
-  
-      await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-  
-      res.redirect("/usuarios/admin"); 
+        const id = parseInt(req.params.id, 10);
+        const fueEliminado = await userService.deleteById(id);
+        if (!fueEliminado) {
+             // Si no se encontró, podrías querer mostrar un error en la vista admin.
+             const usuarios = await userService.getAll();
+             return res.status(404).render("adminUser", { 
+                 usuarios: usuarios, 
+                 error: "Usuario no encontrado",
+             });
+        }
+        res.redirect("/usuarios/admin");
     } catch (error) {
-      console.error("Error al eliminar usuario:", error); 
-      const usuarios = await leerUsuariosDesdeArchivo(); 
-      res.status(500).render("adminUser", {
-        usuarios: usuarios, 
-        error: "Error interno del servidor al eliminar usuario",
-      });
+        // Manejo de error si la eliminación falla por otra razón
+        res.status(500).send("Error al eliminar el usuario");
     }
-  };
+};
 
-//#region  login
-const loginForm = async (__, res) => {
+const loginForm = (req, res) => {
   res.render("loginForm");
 };
 
 const loginUser = async (req, res) => {
-  const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-  const data = await fs.readFile(rutaJSON, "utf-8");
-  const usuarios = JSON.parse(data);
-
-  const { email, password } = req.body;
-
-  const user = usuarios.find(
-    (u) => u.email === email && u.password === password
-  );
-
-  if (user) {
-    return res.render("loginForm", { mensaje: "Login exitoso" });
-  } else {
-    return res.render("loginForm", {
-      mensaje: "Credenciales incorrectas",
-    });
-  }
+    const { email, password } = req.body;
+    const user = await userService.checkCredentials(email, password);
+    if (user) {
+        return res.render("loginForm", { mensaje: "Login exitoso" });
+    }
+    return res.render("loginForm", { mensaje: "Credenciales incorrectas" });
 };
-//#endregion
 
 module.exports = {
   getAdminUsuarios,

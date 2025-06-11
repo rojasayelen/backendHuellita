@@ -1,26 +1,23 @@
 const express = require("express");
-const router = express.Router(); // <--- Aquí creas el enrutador
-const {
-  getUsuarios,
-  postUsuarios,
-  updateUserForm,
-  updateUsuarios,
-  deleteUsuarios,
-  getAdminUsuarios,
-  loginUser,
-  loginForm,
-} = require("../controllers/userController");
+const userController = require("../controllers/userController.js");
+const router = express.Router();
 
-router.get("/", getUsuarios); // GET /usuarios
-router.get("/admin", getAdminUsuarios); // GET /usuarios/admin
-router.post("/", postUsuarios); // POST /usuarios (para crear usuario)
-router.delete("/deleteUsuario/:id", deleteUsuarios); // DELETE /usuarios/deleteUsuario/:id
+// Rutas para vistas de administración y lista pública
+router.get("/admin", userController.getAdminUsuarios);
+router.get("/", userController.getUsuarios);
 
-router.get("/update", updateUserForm);
-router.put("/update", updateUsuarios);
+// Ruta para creación de usuarios (API)
+router.post("/", userController.postUsuarios);
 
-router.get("/login", loginForm);
-router.post("/login", loginUser);
+// Rutas para el formulario de actualización
+router.get("/update", userController.updateUserForm);
+router.post("/update", userController.updateUsuarios);
 
+// Ruta para eliminar un usuario (espera un ID en la URL)
+router.post("/delete/:id", userController.deleteUsuarios); // Usamos POST para que funcione desde un formulario simple
 
-module.exports = router; // <-- Exportas el enrutador completo
+// Rutas para el formulario de login
+router.get("/login", userController.loginForm);
+router.post("/login", userController.loginUser);
+
+module.exports = router;
