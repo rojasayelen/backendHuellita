@@ -6,21 +6,21 @@ const User = require("../models/userModel");
 // // Ruta del archivo JSON
 const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
 
-async function leerUsuariosDesdeArchivo() {
-  try {
-    const data = await fs.readFile(rutaJSON, "utf-8");
-    if (data) {
-      return JSON.parse(data);
-    }
-    return [];
-  } catch (error) {
-    if (error.code === "ENOENT") {
-      return [];
-    }
-    console.error("Error crítico al leer el archivo de usuarios:", error);
-    throw new Error("Error al acceder a la base de datos de usuarios.");
-  }
-}
+// async function leerUsuariosDesdeArchivo() {
+//   try {
+//     const data = await fs.readFile(rutaJSON, "utf-8");
+//     if (data) {
+//       return JSON.parse(data);
+//     }
+//     return [];
+//   } catch (error) {
+//     if (error.code === "ENOENT") {
+//       return [];
+//     }
+//     console.error("Error crítico al leer el archivo de usuarios:", error);
+//     throw new Error("Error al acceder a la base de datos de usuarios.");
+//   }
+// }
 
 const getUsuarios = async (req, res) => {
   try {
