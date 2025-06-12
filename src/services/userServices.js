@@ -22,12 +22,12 @@ async function leerUsuariosDesdeArchivo() {
   }
 }
 
-const getUsuarios = async (req, res) => {
+const getAll = async (req, res) => {
   try {
     const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
     const data = await fs.readFile(rutaJSON, "utf-8");
     const usuarios = JSON.parse(data);
-    res.render("usuarios", { usuarios });
+    return usuarios;
   } catch (error) {
     console.error("Error al leer el archivo JSON:", error);
     res.status(500).json({ error: "Error interno del servidor" });
@@ -210,7 +210,7 @@ const loginUser = async (req, res) => {
 
 module.exports = {
   getAdminUsuarios,
-  getUsuarios,
+  getAll,
   postUsuarios,
   updateUserForm,
   updateUsuarios,
