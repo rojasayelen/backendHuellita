@@ -1,28 +1,23 @@
 const Persona = require("./personaModel");
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-class User extends Persona {
-  #password;
+const userSchema = new Schema({
+    datosPersonales: {
+        type: Schema.Types.ObjectId,
+        ref: 'Persona',
+        required: true
+    },
+    password: {
+        type: String,
+        required: [true, "La contraseña es un campo obligatorio."],
+        minlength: [8, "La contraseña debe tener al menos 8 caracteres."]
+    },
 
-  constructor(nombre, apellido, email, password) {
-    super(nombre, apellido, email);
-    this.setPassword(password);
-  }
+}, {
+    timestamps: true
+});
 
-//Getters
-  getPassword() {
-    return this.#password;
-  }
-
-//Setters
-   setPassword(nuevaPassword){
-    const clave = 8;
-    if (typeof nuevaPassword === 'string' && nuevaPassword.length >= clave) {
-      this.#password = nuevaPassword;
-    } else {
-      throw new Error(`La contraseña debe tener al menos ${clave} caracteres.`);
-    }
-    this.password = nuevaPassword.trim();
-   }
-}
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

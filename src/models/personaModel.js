@@ -1,53 +1,31 @@
-class Persona {
-  #nombre;
-  #apellido;
-  #email;
-    constructor(nombre, apellido, email) {
-      this.setNombre(nombre);
-      this.setApellido(apellido);
-      this.setEmail(email);
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({
+  nombre: {
+    type: String,
+    required: [true, "El nombre no puede estar vacio."],
+    trim: true,
+    },
+  apellido: {
+    type: String,
+    required: [true, "El apellido no puede estar vacio."],
+    trim: true,
+    },
+  email: {
+    type: String,
+    required: [true, "El email es un campo obligatorio."],
+    unique: true,
+    lowercase: true, 
+    trim: true,
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "El email no es valido."]
     }
+}, {
+  timestamps: true
+});
 
-  //Getters
-  getNombre() {
-      return this.#nombre;
-  }
-
-  getApellido() {
-      return this.#apellido;
-  }
-  getEmail() {
-      return this.#email;
-  }
-
-  //Setters
-  setNombre(nuevoNombre) {
-      if (typeof nuevoNombre === 'string' && nuevoNombre.trim() !== '') {
-          this.#nombre = nuevoNombre;
-      } else {
-          throw new Error('El nombre no puede estar vacio.');
-      }
-      this.nombre = nuevoNombre.trim();
-  }
-
-  setApellido(nuevoApellido) {
-      if (typeof nuevoApellido === 'string' && nuevoApellido.trim() !== '') {
-          this.#apellido = nuevoApellido;
-      } else {
-          throw new Error('El apellido no puede estar vacio.');
-      }
-      this.apellido = nuevoApellido.trim();
-  }
-
-  setEmail(nuevoEmail) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (emailRegex.test(nuevoEmail)) {
-          this.#email = nuevoEmail;
-      } else {
-          throw new Error('El email no es valido.');
-      }
-      this.email = nuevoEmail.trim();
-  }
-}
+const Persona = mongoose.model('Persona', userSchema);
 
 module.exports = Persona;
