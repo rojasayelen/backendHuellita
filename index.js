@@ -2,6 +2,9 @@ const express = require("express");
 const methodOverride = require('method-override');
 require("dotenv").config();
 const path = require("path");
+const connectDB = require("./src/config/db");
+
+connectDB(); 
 
 const app = express();
 
