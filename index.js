@@ -28,7 +28,7 @@ app.set("views", path.join(__dirname, "src/views"));
 const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-  console.log(`📦 Método: ${req.method} | Ruta: ${req.url}`);
+  console.log(`Método: ${req.method} | Ruta: ${req.url}`);
   next();
 });
 
