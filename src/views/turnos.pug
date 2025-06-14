@@ -1,40 +1,234 @@
 doctype html
 html
   head
-    title Turnos otorgados
-    style
-      | table { border-collapse: collapse; width: 100%; }
-      | th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-  body
-    h1 Turnos otorgados
+    title Listado de Turnos - Huellitas Felices
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      .search-panel {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .search-form {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      .filter-group {
+        flex: 1;
+        min-width: 200px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+      select, input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        height: 34px;
+      }
+      .btn:hover {
+        background: #2980b9;
+      }
+      .btn-success {
+        background: #2ecc71;
+      }
+      .btn-success:hover {
+        background: #27ae60;
+      }
+      .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+      .status-pendiente { color: #f39c12; font-weight: bold; }
+      .status-confirmado { color: #2ecc71; font-weight: bold; }
+      .status-cancelado { color: #e74c3c; font-weight: bold; }
+      .status-completado { color: #9b59b6; font-weight: bold; }
+      .actions { white-space: nowrap; }
+      .message {
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .info-message {
+        background: #d5f5e3;
+        color: #28b463;
+      }
+      .no-results {
+        text-align: center;
+        padding: 30px;
+        color: #7f8c8d;
+        font-style: italic;
+      }
+      .active-filter {
+        display: inline-block;
+        background: #eaf2f8;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+      .active-filters-container {
+        margin-bottom: 15px;
+      }
 
-    table
-      thead
-        tr
-          th ID
-          th Apellido
-          th Nombre
-          th DNI
-          th Mascota
-          th Especie
-          th Raza
-          th Fecha
-          th Hora
-          th Profesional
-          th Tipo de consulta
-          th Estado del turno
-      tbody
-        each turno in turnos
+    script.
+      function submitSearch() {
+        const param = document.getElementById('filter-param').value;
+        const value = document.getElementById('filter-value').value.trim();
+        
+        if (param && value) {
+          const url = new URL(window.location.origin + '/turnos');
+          const currentParams = new URLSearchParams(window.location.search);
+          
+          currentParams.set(param, value);
+          window.location.href = `${url.pathname}?${currentParams.toString()}`;
+        }
+        return false;
+      }
+      
+      function removeFilter(param) {
+        const url = new URL(window.location.origin + '/turnos');
+        const currentParams = new URLSearchParams(window.location.search);
+        
+        currentParams.delete(param);
+        window.location.href = currentParams.toString() 
+          ? `${url.pathname}?${currentParams.toString()}`
+          : url.pathname;
+      }
+
+  body
+    .header-actions
+      h1 Listado de Turnos
+      a.btn.btn-success(href="/turnos/nuevo") + Nuevo Turno
+
+    .search-panel
+      form.search-form(onsubmit="return submitSearch()")
+        .filter-group
+          label(for="filter-param") Buscar por:
+          select#filter-param(name="param")
+            option(value="nombre") Nombre
+            option(value="apellido") Apellido
+            option(value="mascota") Mascota
+            option(value="profesional") Profesional
+            option(value="tipoConsulta") Tipo Consulta
+            option(value="fecha") Fecha
+            option(value="estado") Estado
+            option(value="id") ID
+        
+        .filter-group
+          label(for="filter-value") Valor:
+          input#filter-value(
+            type="text"
+            name="value"
+            placeholder="Ingrese valor a buscar..."
+            value=""
+          )
+        
+        .filter-group(style="flex: 0 0 auto;")
+          button.btn(type="submit") Buscar
+          a.btn(href="/turnos" style="margin-left: 10px;") Limpiar Todo
+
+    // Mostrar filtros activos (con valor por defecto)
+    - filters = filters || {}
+    if Object.keys(filters).length > 0
+      .active-filters-container
+        each value, param in filters
+          .active-filter
+            | #{param}: #{value}
+            button(
+              type="button"
+              onclick=`removeFilter('${param}')`
+              style="margin-left: 5px; background: none; border: none; color: #e74c3c; cursor: pointer;"
+            ) ×
+
+    if mensaje
+      .message.info-message= mensaje
+
+    if turnos && turnos.length > 0
+      table
+        thead
           tr
-            td= turno.id
-            td= turno.apellido
-            td= turno.nombre
-            td= turno.dni
-            td= turno.mascota
-            td= turno.especie
-            td= turno.raza
-            td= turno.fecha
-            td= turno.hora
-            td= turno.profesional
-            td= turno.tipoConsulta
-            td= turno.estado
+            th ID
+            th Apellido
+            th Nombre
+            th Mascota
+            th Fecha
+            th Hora
+            th Profesional
+            th Tipo
+            th Estado
+            th Acciones
+        tbody
+          each turno in turnos
+            tr
+              td= turno.id
+              td= turno.apellido
+              td= turno.nombre
+              td= turno.mascota
+              td= turno.fecha
+              td= turno.hora
+              td= turno.profesional
+              td= turno.tipoConsulta || '-'
+              td(class=`status-${turno.estado}`)= turno.estado
+              td.actions
+                a.btn(href=`/turnos/${turno.id}` style="padding: 5px 8px;") Ver
+                a.btn(href=`/turnos/${turno.id}/editar` style="padding: 5px 8px;") Editar
+    
+    else if Object.keys(filters).length > 0
+      .no-results
+        p No se encontraron turnos con los filtros aplicados
+    else
+      .no-results
+        p No hay turnos registrados

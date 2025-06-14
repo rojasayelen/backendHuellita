@@ -1,20 +1,104 @@
 doctype html
 html
   head
-    title Detalle de Turno
+    title Detalle de Turno ##{turno.id} - Huellitas Felices
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      .info-card {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .info-group {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+      .info-group:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .info-label {
+        font-weight: bold;
+        color: #2c3e50;
+        display: inline-block;
+        min-width: 120px;
+      }
+      .actions {
+        margin-top: 25px;
+      }
+      .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-block;
+      }
+      .btn:hover {
+        background: #2980b9;
+      }
+      .btn-danger {
+        background: #e74c3c;
+      }
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+      .btn-secondary {
+        background: #95a5a6;
+      }
+      .btn-secondary:hover {
+        background: #7f8c8d;
+      }
+      .btn + .btn {
+        margin-left: 10px;
+      }
+
   body
     h1 Detalle del Turno ##{turno.id}
     
-    p Cliente: #{turno.nombre} #{turno.apellido}
-    p DNI: #{turno.dni}
-    p Mascota: #{turno.mascota} (#{turno.especie}, #{turno.raza})
-    p Fecha: #{turno.fecha} a las #{turno.hora}
-    p Profesional: #{turno.profesional}
-    p Tipo: #{turno.tipoConsulta}
-    p Estado: #{turno.estado}
+    .info-card
+      .info-group
+        span.info-label Cliente:
+        span #{turno.nombre} #{turno.apellido}
+      .info-group
+        span.info-label DNI:
+        span= turno.dni
+      .info-group
+        span.info-label Mascota:
+        span #{turno.mascota} (#{turno.especie}#{turno.raza ? ', ' + turno.raza : ''})
     
-    div
-      a(href=`/turnos/${turno.id}/editar`) Editar
-      form(action=`/turnos/${turno.id}?_method=DELETE` method="POST" style="display: inline; margin-left: 10px")
-        button(type="submit") Eliminar
-      a(href="/turnos" style="margin-left: 10px") Volver al listado
+    .info-card
+      .info-group
+        span.info-label Fecha/Hora:
+        span #{turno.fecha} a las #{turno.hora}
+      .info-group
+        span.info-label Profesional:
+        span= turno.profesional
+      .info-group
+        span.info-label Tipo:
+        span= turno.tipoConsulta || 'No especificado'
+      .info-group
+        span.info-label Estado:
+        span= turno.estado
+    
+    .actions
+      a.btn(href=`/turnos/${turno.id}/editar`) Editar
+      a.btn.btn-danger(href=`/turnos/${turno.id}/eliminar`) Eliminar
+      a.btn.btn-secondary(href="/turnos") Volver al listado

@@ -1,11 +1,74 @@
 doctype html
 html
   head
-    title Eliminar Turno
+    title Confirmar Eliminación - Huellitas Felices
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      h1 {
+        color: #e74c3c;
+        margin-bottom: 25px;
+      }
+      .confirmation-card {
+        background: #f9f9f9;
+        padding: 25px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+        border-left: 4px solid #e74c3c;
+      }
+      .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px;
+        display: inline-block;
+        margin: 0 10px;
+      }
+      .btn:hover {
+        background: #2980b9;
+      }
+      .btn-danger {
+        background: #e74c3c;
+      }
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+      .btn-container {
+        margin-top: 30px;
+      }
+      .turno-info {
+        margin: 20px 0;
+        line-height: 1.8;
+      }
+
   body
-    h1 Eliminar turno
+    h1 Confirmar Eliminación
+    
+    .confirmation-card
+      .turno-info
+        p ¿Estás seguro que querés eliminar el siguiente turno?
+        p 
+          strong Cliente: 
+          | #{turno.nombre} #{turno.apellido}
+        p 
+          strong Mascota: 
+          | #{turno.mascota}
+        p 
+          strong Fecha: 
+          | #{turno.fecha} a las #{turno.hora}
 
-    p ¿Estás seguro que querés eliminar el turno de #{turno.nombre} #{turno.apellido} para la mascota #{turno.mascota}?
-
-    form(action=`/turnos/${turno.id}?_method=DELETE` method="POST")
-      button(type="submit") Confirmar eliminación
+      .btn-container
+        form(action=`/turnos/${turno.id}?_method=DELETE` method="POST" style="display: inline-block")
+          button.btn.btn-danger(type="submit") Confirmar Eliminación
+        a.btn(href=`/turnos/${turno.id}`) Cancelar

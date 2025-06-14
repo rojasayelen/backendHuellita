@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 
 // Ruta base de prueba
 app.get("/", (req, res) => {
-	res.send("Huellitas Felices");
+	res.render("dashboard");
 });
 
 // Importar routers
