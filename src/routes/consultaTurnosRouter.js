@@ -12,7 +12,7 @@ const {
 const manejarConsultaTurnos = require("../middleware/filtroTurnos");
 
 // Rutas para vistas
-router.get("/crear", (req, res) => res.render("crearTurnos"));
+router.get("/nuevo", (req, res) => res.render("crearTurnos"));
 router.get("/:id/editar", mostrarFormularioEdicion); // Muestra editarTurno.pug
 router.get("/:id/eliminar", mostrarConfirmacionEliminar); // Muestra eliminarTurno.pug
 router.get("/:id", obtenerTurno); // Muestra detalleTurno.pug

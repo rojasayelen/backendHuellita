@@ -28,7 +28,7 @@ const port = process.env.PORT || 3000;
 
 // Ruta base de prueba
 app.get("/", (req, res) => {
-	res.send("Hola Mundo");
+	res.send("Huellitas Felices Backend");
 });
 
 // Importar routers
