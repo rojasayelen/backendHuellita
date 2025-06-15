@@ -9,6 +9,11 @@ router.get("/", userController.getUsuarios);
 // Ruta para creación de usuarios (API)
 router.post("/", userController.postUsuarios);
 
+router.get("/crear", userController.createUserForm);
+router.post("/crear", userController.postUsuarios);
+
+//TO DO: Revisar rutas por funcionalidad    
+
 // // Rutas para el formulario de actualización
 // router.get("/update", userController.updateUserForm);
 // router.post("/update", userController.updateUsuarios);

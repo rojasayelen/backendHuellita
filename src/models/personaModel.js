@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
-const mongoose = require("mongoose");
-
-const userSchema = new mongoose.Schema({
+const personaSchema = new mongoose.Schema({
   nombre: {
     type: String,
     required: [true, "El nombre no puede estar vacio."],
@@ -26,6 +23,6 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const Persona = mongoose.model('Persona', userSchema);
+const Persona = mongoose.model('Persona', personaSchema);
 
 module.exports = Persona;

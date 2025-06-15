@@ -13,6 +13,11 @@ const userSchema = new Schema({
         required: [true, "La contraseña es un campo obligatorio."],
         minlength: [8, "La contraseña debe tener al menos 8 caracteres."]
     },
+    roles: {
+        type: [String],
+        enum: ["admin", "user", "guest"],
+        default: ["user"]
+    },
 
 }, {
     timestamps: true

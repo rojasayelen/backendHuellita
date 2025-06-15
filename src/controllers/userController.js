@@ -10,6 +10,10 @@ const getUsuarios = async (req, res) => {
   }
 };
 
+const createUserForm = (req, res) => {
+  res.render("createUser");
+};  
+
 const postUsuarios = async (req, res) => {
   try {
     const { nombre, apellido, email, password } = req.body;
@@ -88,6 +92,7 @@ module.exports = {
   getAdminUsuarios,
   getUsuarios,
   postUsuarios,
+  createUserForm,
   updateUserForm,
   updateUsuarios,
   deleteUsuarios,

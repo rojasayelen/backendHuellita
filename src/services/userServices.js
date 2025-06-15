@@ -1,20 +1,22 @@
 const Persona = require("../models/personaModel");
 const User = require("../models/userModel");
 
-const create = async (userData) => {
-  const { nombre, apellido, email, password } = userData;
-  // En un escenario de producción, aquí se iniciaría una "sesión" o "transacción"
-  // para asegurar que si falla la creación del User, también se deshaga la creación de la Persona.
-  // Por ahora, lo mantenemos simple.
+console.log('--- Depurando userService.js ---');
+console.log('Tipo de Persona importado:', typeof Persona);
+console.log('Contenido de Persona:', Persona);
+console.log('--- Fin de la Depuración ---');
 
+const create = async (userData) => {
+  const { nombre, apellido, email, password, rol } = userData;
 
     try {
-      const persona = new Persona({ nombre, apellido, email });
-      // --- PASO 2: Crear la entidad User, enlazándola a la Persona ---
-      // Usamos el ID de la persona recién creada para el campo de referencia.
+      const instanciaPersona = new Persona({ nombre, apellido, email });
+      await instanciaPersona.save();
+
       const nuevoUsuario = await User.create({
         password: password,
-        datosPersonales: persona._id,
+        datosPersonales: instanciaPersona._id,
+        rol: rol
       });
       return nuevoUsuario;
     }catch (error) {
