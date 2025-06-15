@@ -72,7 +72,7 @@ backendHuellita/
 
 | Ruta                | Descripción                    | Método |
 |---------------------|-------------------------------|--------|
-| turnos/crear           | formulario para crear nuevos turnos             | POST    |
+| turnos/nuevo           | formulario para crear nuevos turnos             | POST    |
 | turnos/:id/editar     | formulario para editar un turno   | GET    |
 | /turnos | lista de turnos      | GET    |
 | /turnos/:id/eliminar/:id?_method=DELETE         | Lista actualizada de los turnos | DELETE    |

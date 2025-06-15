@@ -242,18 +242,21 @@ module.exports = {
       const data = await fs.readFile(rutaJSON, "utf-8");
       const turnos = JSON.parse(data);
 
-      const turno = turnos.find((t) => t.id === id);
+      const turno = turnos.find((t) => t.id == id);
       if (!turno) {
         return res
           .status(404)
           .render("error", { mensaje: "Turno no encontrado" });
       }
 
-      res.render("eliminarTurno", { turno });
+      res.render("eliminarTurno", { 
+      title: "Confirmar Eliminación",
+      turno 
+    });
     } catch (error) {
       res
         .status(500)
         .render("error", { mensaje: "Error al cargar confirmación" });
     }
-  },
+  }
 };
