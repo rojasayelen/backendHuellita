@@ -5,8 +5,8 @@ const connectDB = async () => {
   try {
     // Elige la URI de conexión basada en el ambiente
     const dbURI = process.env.NODE_ENV === 'production'
-      ? process.env.DB_URI_ATLAS
-      : process.env.DB_URI_LOCAL;
+      ? process.env.DB_URL_ATLAS
+      : process.env.DB_URL_LOCAL;
 
     if (!dbURI) {
       throw new Error("La URI de la base de datos no está definida en el archivo .env");
