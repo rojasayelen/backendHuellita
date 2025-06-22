@@ -1,234 +1,199 @@
-doctype html
-html
-  head
-    title Listado de Turnos - Huellitas Felices
-    style.
-      body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        margin: 0;
-        padding: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-      h1 {
-        color: #2c3e50;
-        margin-bottom: 20px;
-      }
-      .search-panel {
-        background: #f9f9f9;
-        padding: 20px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      }
-      .search-form {
-        display: flex;
-        gap: 10px;
-        align-items: flex-end;
-        flex-wrap: wrap;
-      }
-      .filter-group {
-        flex: 1;
-        min-width: 200px;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #2c3e50;
-      }
-      select, input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-      .btn {
-        background: #3498db;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        height: 34px;
-      }
-      .btn:hover {
-        background: #2980b9;
-      }
-      .btn-success {
-        background: #2ecc71;
-      }
-      .btn-success:hover {
-        background: #27ae60;
-      }
-      .header-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-      }
-      th, td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-      }
-      th {
-        background-color: #3498db;
-        color: white;
-        font-weight: bold;
-      }
-      tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-      tr:hover {
-        background-color: #f1f1f1;
-      }
-      .status-pendiente { color: #f39c12; font-weight: bold; }
-      .status-confirmado { color: #2ecc71; font-weight: bold; }
-      .status-cancelado { color: #e74c3c; font-weight: bold; }
-      .status-completado { color: #9b59b6; font-weight: bold; }
-      .actions { white-space: nowrap; }
-      .message {
-        padding: 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        text-align: center;
-      }
-      .info-message {
-        background: #d5f5e3;
-        color: #28b463;
-      }
-      .no-results {
-        text-align: center;
-        padding: 30px;
-        color: #7f8c8d;
-        font-style: italic;
-      }
-      .active-filter {
-        display: inline-block;
-        background: #eaf2f8;
-        padding: 5px 10px;
-        border-radius: 4px;
-        margin-right: 10px;
-        margin-bottom: 10px;
-      }
-      .active-filters-container {
-        margin-bottom: 15px;
-      }
+extends layout
 
-    script.
-      function submitSearch() {
-        const param = document.getElementById('filter-param').value;
-        const value = document.getElementById('filter-value').value.trim();
-        
-        if (param && value) {
-          const url = new URL(window.location.origin + '/turnos');
-          const currentParams = new URLSearchParams(window.location.search);
-          
-          currentParams.set(param, value);
-          window.location.href = `${url.pathname}?${currentParams.toString()}`;
-        }
-        return false;
-      }
+block breadcrumb
+  li.breadcrumb-item
+    a(href="/") Inicio
+  li.breadcrumb-item.active(aria-current="page") Turnos
+
+block styles
+  style.
+    .search-panel {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #dee2e6;
+    }
+    .search-form {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    .filter-group label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+    }
+    .status-pendiente { color: #f39c12; font-weight: bold; }
+    .status-confirmado { color: #28a745; font-weight: bold; }
+    .status-cancelado { color: #dc3545; font-weight: bold; }
+    .status-completado { color: #6f42c1; font-weight: bold; }
+    .active-filter {
+      display: inline-block;
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      font-size: 0.875rem;
+    }
+    .active-filters-container {
+      margin-bottom: 20px;
+    }
+    .table-responsive {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.125);
+    }
+    .table th {
+      background-color: #0d6efd;
+      color: white;
+      font-weight: 600;
+      border: none;
+    }
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6c757d;
+    }
+    .no-results i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1.h2.mb-0
+      i.bi.bi-calendar3.me-2
+      | Listado de Turnos
+    a.btn.btn-success(href="/turnos/nuevo")
+      i.bi.bi-plus-circle.me-2
+      | Nuevo Turno
+
+  .search-panel
+    form.search-form(onsubmit="return submitSearch()")
+      .filter-group
+        label(for="filter-param") Buscar por:
+        select.form-select#filter-param(name="param")
+          option(value="nombre") Nombre
+          option(value="apellido") Apellido
+          option(value="mascota") Mascota
+          option(value="profesional") Profesional
+          option(value="tipoConsulta") Tipo Consulta
+          option(value="fecha") Fecha
+          option(value="estado") Estado
+          option(value="id") ID
       
-      function removeFilter(param) {
-        const url = new URL(window.location.origin + '/turnos');
-        const currentParams = new URLSearchParams(window.location.search);
-        
-        currentParams.delete(param);
-        window.location.href = currentParams.toString() 
-          ? `${url.pathname}?${currentParams.toString()}`
-          : url.pathname;
-      }
+      .filter-group
+        label(for="filter-value") Valor:
+        input.form-control#filter-value(
+          type="text"
+          name="value"
+          placeholder="Ingrese valor a buscar..."
+          value=""
+        )
+      
+      .filter-group(style="flex: 0 0 auto;")
+        button.btn.btn-primary(type="submit")
+          i.bi.bi-search.me-2
+          | Buscar
+        a.btn.btn-outline-secondary.ms-2(href="/turnos")
+          i.bi.bi-x-circle.me-2
+          | Limpiar
 
-  body
-    .header-actions
-      h1 Listado de Turnos
-      a.btn.btn-success(href="/turnos/nuevo") + Nuevo Turno
-
-    .search-panel
-      form.search-form(onsubmit="return submitSearch()")
-        .filter-group
-          label(for="filter-param") Buscar por:
-          select#filter-param(name="param")
-            option(value="nombre") Nombre
-            option(value="apellido") Apellido
-            option(value="mascota") Mascota
-            option(value="profesional") Profesional
-            option(value="tipoConsulta") Tipo Consulta
-            option(value="fecha") Fecha
-            option(value="estado") Estado
-            option(value="id") ID
-        
-        .filter-group
-          label(for="filter-value") Valor:
-          input#filter-value(
-            type="text"
-            name="value"
-            placeholder="Ingrese valor a buscar..."
-            value=""
+  // Mostrar filtros activos
+  - filters = filters || {}
+  if Object.keys(filters).length > 0
+    .active-filters-container
+      .d-flex.align-items-center.mb-2
+        small.text-muted.me-2 Filtros activos:
+      each value, param in filters
+        .active-filter
+          strong #{param}:
+          |  #{value}
+          button.btn.btn-sm.ms-2(
+            type="button"
+            onclick=`removeFilter('${param}')`
+            style="background: none; border: none; color: #dc3545; padding: 0; line-height: 1;"
           )
-        
-        .filter-group(style="flex: 0 0 auto;")
-          button.btn(type="submit") Buscar
-          a.btn(href="/turnos" style="margin-left: 10px;") Limpiar Todo
+            i.bi.bi-x
 
-    // Mostrar filtros activos (con valor por defecto)
-    - filters = filters || {}
-    if Object.keys(filters).length > 0
-      .active-filters-container
-        each value, param in filters
-          .active-filter
-            | #{param}: #{value}
-            button(
-              type="button"
-              onclick=`removeFilter('${param}')`
-              style="margin-left: 5px; background: none; border: none; color: #e74c3c; cursor: pointer;"
-            ) ×
-
-    if mensaje
-      .message.info-message= mensaje
-
-    if turnos && turnos.length > 0
-      table
+  if turnos && turnos.length > 0
+    .table-responsive
+      table.table.table-hover.mb-0
         thead
           tr
             th ID
-            th Apellido
-            th Nombre
+            th Cliente
             th Mascota
             th Fecha
             th Hora
             th Profesional
             th Tipo
             th Estado
-            th Acciones
+            th.text-center Acciones
         tbody
           each turno in turnos
             tr
-              td= turno.id
-              td= turno.apellido
-              td= turno.nombre
+              td.fw-bold= turno.id
+              td #{turno.apellido}, #{turno.nombre}
               td= turno.mascota
               td= turno.fecha
               td= turno.hora
               td= turno.profesional
               td= turno.tipoConsulta || '-'
-              td(class=`status-${turno.estado}`)= turno.estado
-              td.actions
-                a.btn(href=`/turnos/${turno.id}` style="padding: 5px 8px;") Ver
-                a.btn(href=`/turnos/${turno.id}/editar` style="padding: 5px 8px;") Editar
+              td
+                span(class=`status-${turno.estado}`)= turno.estado
+              td.text-center
+                .btn-group(role="group" aria-label="Acciones")
+                  a.btn.btn-sm.btn-outline-primary(href=`/turnos/${turno.id}` title="Ver detalles")
+                    i.bi.bi-eye
+                  a.btn.btn-sm.btn-outline-secondary(href=`/turnos/${turno.id}/editar` title="Editar")
+                    i.bi.bi-pencil
+  
+  else if Object.keys(filters).length > 0
+    .no-results
+      i.bi.bi-search
+      h4 No se encontraron turnos
+      p.mb-0 No hay turnos que coincidan con los filtros aplicados
+  else
+    .no-results
+      i.bi.bi-calendar-x
+      h4 No hay turnos registrados
+      p.mb-3 Aún no se han creado turnos en el sistema
+      a.btn.btn-primary(href="/turnos/nuevo")
+        i.bi.bi-plus-circle.me-2
+        | Crear primer turno
+
+block scripts
+  script.
+    function submitSearch() {
+      const param = document.getElementById('filter-param').value;
+      const value = document.getElementById('filter-value').value.trim();
+      
+      if (param && value) {
+        const url = new URL(window.location.origin + '/turnos');
+        const currentParams = new URLSearchParams(window.location.search);
+        
+        currentParams.set(param, value);
+        window.location.href = `${url.pathname}?${currentParams.toString()}`;
+      }
+      return false;
+    }
     
-    else if Object.keys(filters).length > 0
-      .no-results
-        p No se encontraron turnos con los filtros aplicados
-    else
-      .no-results
-        p No hay turnos registrados
+    function removeFilter(param) {
+      const url = new URL(window.location.origin + '/turnos');
+      const currentParams = new URLSearchParams(window.location.search);
+      
+      currentParams.delete(param);
+      window.location.href = currentParams.toString() 
+        ? `${url.pathname}?${currentParams.toString()}`
+        : url.pathname;
+    }

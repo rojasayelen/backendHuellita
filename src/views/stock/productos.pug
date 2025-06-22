@@ -1,0 +1,51 @@
+extends ../layout
+
+block content
+  .container.mt-4
+    .d-flex.justify-content-between.align-items-center.mb-4
+      h1 Gestión de Productos
+      a.btn.btn-primary(href="/stock/productos/nuevo") + Nuevo Producto
+
+    .card
+      .card-body
+        .table-responsive
+          table.table.table-striped.table-hover
+            thead
+              tr
+                th Código
+                th Nombre
+                th Categoría
+                th Stock
+                th Mínimo
+                th Precio
+                th Acciones
+            tbody
+              each producto in productos
+                tr
+                  td= producto.codigo
+                  td= producto.nombre
+                  td= producto.categoria
+                  td(class=producto.stockTotal <= producto.stockMinimo ? 'text-danger' : '')= producto.stockTotal
+                  td= producto.stockMinimo
+                  td= '$' + (producto.precio ? producto.precio.toFixed(2) : 'N/A')
+                  td
+                    a.btn.btn-sm.btn-outline-primary(href=`/stock/productos/${producto._id}`) Editar
+                    | 
+                    a.btn.btn-sm.btn-outline-info(href=`/stock/productos/${producto._id}/lotes`) Lotes
+                    | 
+                    button.btn.btn-sm.btn-outline-danger(type="button" onclick=`confirmarEliminacion('${producto._id}')`) Eliminar
+
+block scripts
+  script.
+    function confirmarEliminacion(id) {
+      if(confirm('¿Estás seguro de eliminar este producto?')) {
+        fetch(`/stock/productos/${id}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+          if(response.ok) window.location.reload();
+          else alert('Error al eliminar');
+        });
+      }
+    }

@@ -1,0 +1,81 @@
+extends ../layout
+
+block content
+  .container.mt-4
+    .d-flex.justify-content-between.align-items-center.mb-4
+      h1 
+        | Lotes de #{producto.nombre} 
+        small.text-muted (#{producto.codigo})
+      a.btn.btn-primary(href=`/stock/productos/${producto._id}/lotes/nuevo`) + Nuevo Lote
+    
+    .card.mb-4
+      .card-body
+        h5.card-title Resumen
+        .row
+          .col-md-4
+            .card.bg-light
+              .card-body
+                h6.card-subtitle.mb-2.text-muted Stock Total
+                h3= producto.stockTotal || 0
+          .col-md-4
+            .card.bg-light
+              .card-body
+                h6.card-subtitle.mb-2.text-muted Stock Mínimo
+                h3= producto.stockMinimo || 0
+          .col-md-4
+            .card.bg-light
+              .card-body
+                h6.card-subtitle.mb-2.text-muted Próximos a Vencer
+                h3= proximosAVencer.length || 0
+    
+    .card
+      .card-header
+        h5.mb-0 Lista de Lotes
+      .card-body
+        .table-responsive
+          table.table.table-striped.table-hover
+            thead
+              tr
+                th Lote
+                th Cantidad
+                th Ingreso
+                th Vencimiento
+                th Estado
+                th Acciones
+            tbody
+              each lote in lotes
+                tr(class=lote.fechaVencimiento < new Date() ? 'table-danger' : '')
+                  td= lote.codigoLote
+                  td= lote.cantidad
+                  td= lote.fechaIngreso.toLocaleDateString()
+                  td= lote.fechaVencimiento.toLocaleDateString()
+                  td
+                    if lote.fechaVencimiento < new Date()
+                      span.badge.bg-danger Vencido
+                    else if moment(lote.fechaVencimiento).diff(moment(), 'days') <= 30
+                      span.badge.bg-warning Por vencer
+                    else
+                      span.badge.bg-success OK
+                  td
+                    a.btn.btn-sm.btn-outline-primary(href=`/stock/productos/${producto._id}/lotes/${lote._id}`) Editar
+                    | 
+                    button.btn.btn-sm.btn-outline-danger(
+                      type="button" 
+                      onclick=`confirmarEliminacionLote('${producto._id}', '${lote._id}')`
+                    ) Eliminar
+
+block scripts
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
+  script.
+    function confirmarEliminacionLote(productoId, loteId) {
+      if(confirm('¿Estás seguro de eliminar este lote?')) {
+        fetch(`/stock/productos/${productoId}/lotes/${loteId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+          if(response.ok) window.location.reload();
+          else alert('Error al eliminar');
+        });
+      }
+    }

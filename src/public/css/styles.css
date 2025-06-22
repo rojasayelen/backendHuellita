@@ -1,0 +1,90 @@
+/* Estilos generales */
+body {
+  background-color: #f8f9fa;
+  color: #212529;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar personalizada */
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Tarjetas */
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.125);
+  font-weight: 500;
+}
+
+/* Tablas */
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+
+/* Botones */
+.btn {
+  border-radius: 0.375rem;
+}
+
+/* Alertas */
+.alert {
+  border-radius: 0.375rem;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Formularios */
+.form-control, .form-select {
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  background-color: transparent;
+  padding: 0.5rem 0;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Estilos específicos para el módulo de stock */
+.stock-alert {
+  border-left: 4px solid #dc3545;
+}
+
+.stock-warning {
+  border-left: 4px solid #ffc107;
+}
+
+.stock-ok {
+  border-left: 4px solid #198754;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table-responsive {
+    border: 0;
+  }
+}

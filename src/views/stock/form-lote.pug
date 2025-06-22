@@ -1,0 +1,54 @@
+extends ../layout
+
+block content
+  .container.mt-4
+    .card
+      .card-header
+        h3= (lote ? 'Editar' : 'Nuevo') + ' Lote'
+        small.text-muted #{producto.nombre} (#{producto.codigo})
+      .card-body
+        form(method="POST" action=lote ? `/stock/productos/${producto._id}/lotes/${lote._id}` : `/stock/productos/${producto._id}/lotes`)
+          if lote
+            input(type="hidden" name="_method" value="PUT")
+          
+          .row.mb-3
+            .col-md-6
+              label.form-label Código de Lote
+              input.form-control(
+                type="text" 
+                name="codigoLote" 
+                required
+                value=lote?.codigoLote || ''
+              )
+            .col-md-6
+              label.form-label Cantidad
+              input.form-control(
+                type="number" 
+                name="cantidad" 
+                min="0.01" 
+                step="0.01"
+                required
+                value=lote?.cantidad || ''
+              )
+          
+          .row.mb-3
+            .col-md-6
+              label.form-label Fecha de Vencimiento
+              input.form-control(
+                type="date" 
+                name="fechaVencimiento" 
+                required
+                value=lote?.fechaVencimiento ? moment(lote.fechaVencimiento).format('YYYY-MM-DD') : ''
+              )
+            .col-md-6
+              label.form-label Estado
+              select.form-select(name="activo")
+                option(value="true" selected=lote ? lote.activo : true) Activo
+                option(value="false" selected=lote && !lote.activo) Inactivo
+          
+          .d-grid.gap-2.d-md-flex.justify-content-md-end
+            a.btn.btn-secondary.me-md-2(href=`/stock/productos/${producto._id}/lotes`) Cancelar
+            button.btn.btn-primary(type="submit")= lote ? 'Actualizar' : 'Guardar'
+
+block scripts
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")

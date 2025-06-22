@@ -1,0 +1,151 @@
+extends ../layout
+
+block breadcrumb
+  li.breadcrumb-item
+    a(href="/") Inicio
+  li.breadcrumb-item.active Stock
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Dashboard de Stock
+    a.btn.btn-primary(href="/stock/productos/nuevo") 
+      i.bi.bi-plus-circle.me-1
+      | Nuevo Producto
+
+  .row
+    // Tarjeta de Alertas
+    .col-lg-6.mb-4
+      .card.stock-alert
+        .card-header.bg-white
+          h5.mb-0 
+            i.bi.bi-exclamation-triangle-fill.text-danger.me-2
+            | Alertas
+        .card-body
+          h6.card-subtitle.mb-3.text-muted 
+            i.bi.bi-box-fill.me-1
+            | Stock Mínimo
+          ul.list-group.list-group-flush
+            if alertas && alertas.stockMinimo && alertas.stockMinimo.length > 0
+              each producto in alertas.stockMinimo
+                li.list-group-item.d-flex.justify-content-between.align-items-center
+                  .d-flex.align-items-center
+                    i.bi.bi-exclamation-circle-fill.text-danger.me-2
+                    span= producto.nombre
+                  span.badge.bg-danger.rounded-pill= `${producto.stockTotal}/${producto.stockMinimo}`
+            else
+              li.list-group-item.text-muted.text-center No hay alertas de stock mínimo
+
+          h6.card-subtitle.mb-3.text-muted.mt-4
+            i.bi.bi-calendar-x-fill.me-1
+            | Próximos a Vencer
+          ul.list-group.list-group-flush
+            if alertas && alertas.proximosAVencer && alertas.proximosAVencer.length > 0
+              each lote in alertas.proximosAVencer
+                li.list-group-item
+                  .d-flex.justify-content-between.align-items-center
+                    .d-flex.flex-column
+                      .d-flex.align-items-center.mb-1
+                        i.bi.bi-tag-fill.me-2(class=lote.fechaVencimiento < new Date() ? 'text-danger' : 'text-warning')
+                        strong= lote.producto.nombre
+                      small.text-muted Lote: #{lote.codigoLote}
+                    .text-end
+                      if lote.fechaVencimiento < new Date()
+                        span.badge.bg-danger VENCIDO
+                      else
+                        span.badge.bg-warning.text-dark= `Vence: ${lote.fechaVencimiento.toLocaleDateString()}`
+            else
+              li.list-group-item.text-muted.text-center No hay productos próximos a vencer
+
+    // Tarjeta de Acciones Rápidas
+    .col-lg-6.mb-4
+      .card
+        .card-header.bg-white
+          h5.mb-0 
+            i.bi.bi-lightning-charge-fill.text-primary.me-2
+            | Acciones Rápidas
+        .card-body
+          .d-grid.gap-3
+            a.btn.btn-outline-primary(href="/stock/productos") 
+              i.bi.bi-box-seam.me-1
+              | Ver Todos los Productos
+            a.btn.btn-outline-secondary(href="/stock/movimientos") 
+              i.bi.bi-arrow-left-right.me-1
+              | Ver Movimientos
+            .btn-group(role="group")
+              a.btn.btn-outline-success(href="/api/stock/reportes?tipo=excel") 
+                i.bi.bi-file-excel.me-1
+                | Exportar Excel
+              a.btn.btn-outline-danger(href="/api/stock/reportes") 
+                i.bi.bi-file-pdf.me-1
+                | Exportar PDF
+
+  // Resumen de Inventario
+  .card.mt-4
+    .card-header.bg-white
+      h5.mb-0 
+        i.bi.bi-clipboard-data.me-2
+        | Resumen de Inventario
+    .card-body
+      .table-responsive
+        table.table.table-hover.align-middle
+          thead
+            tr
+              th Código
+              th Producto
+              th Categoría
+              th Stock
+              th Mínimo
+              th Estado
+              th Acciones
+          tbody
+            if inventario && inventario.length > 0
+              each producto in inventario
+                tr(class=producto.stockTotal <= producto.stockMinimo ? 'table-warning' : '')
+                  td= producto.codigo
+                  td= producto.nombre
+                  td
+                    span.badge(class={
+                      'bg-primary': producto.categoria === 'medicamento',
+                      'bg-success': producto.categoria === 'alimento',
+                      'bg-info': producto.categoria === 'accesorio',
+                      'bg-secondary': producto.categoria === 'higiene'
+                    })= producto.categoria
+                  td(class=producto.stockTotal <= producto.stockMinimo ? 'text-danger fw-bold' : '')= producto.stockTotal
+                  td= producto.stockMinimo
+                  td
+                    if producto.stockTotal <= producto.stockMinimo
+                      span.badge.bg-warning.text-dark
+                        i.bi.bi-exclamation-triangle-fill.me-1
+                        | Bajo stock
+                    else
+                      span.badge.bg-success
+                        i.bi.bi-check-circle-fill.me-1
+                        | OK
+                  td
+                    .btn-group.btn-group-sm(role="group")
+                      a.btn.btn-outline-primary(href=`/stock/productos/${producto._id}` title="Editar")
+                        i.bi.bi-pencil
+                      button.btn.btn-outline-danger(
+                        type="button" 
+                        onclick=`confirmarEliminacion('${producto._id}')`
+                        title="Eliminar"
+                      )
+                        i.bi.bi-trash
+            else
+              tr
+                td.text-center.text-muted(colspan="7") No hay productos en el inventario
+
+block scripts
+  script.
+    function confirmarEliminacion(id) {
+      if(confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+        fetch(`/stock/productos/${id}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+          if(response.ok) window.location.reload();
+          else alert('Error al eliminar el producto');
+        });
+      }
+    }

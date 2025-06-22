@@ -22,13 +22,32 @@ backendHuellita/
 ├── src/
 │   ├── config/
 │   ├── controllers/
+│       └── stockController.js
 │   ├── data/
 │   ├── middleware/ 
+│       └── validators
+│           └── stockValidator.js
 │   ├── models/
+│       └── Lote.js
+│       └── Movimientos.js
+│       └── Producto.js
+│   ├── Public/
+│       └── css
+│           └── style.css
 │   ├── routes/
+│       └── stockRouter.js
 │   ├── services/
+│       └── stockService.js
 │   ├── utils/
+│       └── reportGenerator.js
 │   └── views/
+│     └── layout.pug
+│     └── stock
+│           └── dashboard.pug
+│           └── form-lote.pug
+│           └── lotes.pug
+│           └── productos.pug
+│           └── form-producto.pug
 |__  index.js
 
 ```

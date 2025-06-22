@@ -1,0 +1,85 @@
+extends ../layout
+
+block content
+  .container.mt-4
+    .card
+      .card-header
+        h3= (producto ? 'Editar' : 'Nuevo') + ' Producto'
+      .card-body
+        form(method="POST" action=producto ? `/stock/productos/${producto._id}` : '/stock/productos')
+          if producto
+            input(type="hidden" name="_method" value="PUT")
+          
+          .row.mb-3
+            .col-md-6
+              label.form-label Código
+              input.form-control(
+                type="text" 
+                name="codigo" 
+                required
+                value=producto ? (producto.codigo || '') : ''
+              )
+            .col-md-6
+              label.form-label Nombre
+              input.form-control(
+                type="text" 
+                name="nombre" 
+                required
+                value=producto ? (producto.nombre || '') : ''
+              )
+          
+          .row.mb-3
+            .col-md-6
+              label.form-label Categoría
+              select.form-select(name="categoria" required)
+                option(value="" disabled selected=!producto) Seleccione...
+                each categoria in ['medicamento', 'alimento', 'accesorio', 'higiene']
+                  option(
+                    value=categoria
+                    selected=producto && producto.categoria === categoria
+                  )= categoria.charAt(0).toUpperCase() + categoria.slice(1)
+            .col-md-6
+              label.form-label Proveedor
+              input.form-control(
+                type="text" 
+                name="proveedor" 
+                value=producto ? (producto.proveedor || '') : ''
+              )
+          
+          .row.mb-3
+            .col-md-4
+              label.form-label Stock Mínimo
+              input.form-control(
+                type="number" 
+                name="stockMinimo" 
+                min="0" 
+                step="1"
+                value=producto ? (producto.stockMinimo || 0) : 0
+              )
+            .col-md-4
+              label.form-label Precio
+              .input-group
+                span.input-group-text $
+                input.form-control(
+                  type="number" 
+                  name="precio" 
+                  min="0" 
+                  step="0.01"
+                  value=producto ? (producto.precio || '') : ''
+                )
+            .col-md-4
+              label.form-label Estado
+              select.form-select(name="activo")
+                option(value="true" selected=producto ? producto.activo : true) Activo
+                option(value="false" selected=producto && !producto.activo) Inactivo
+          
+          .mb-3
+            label.form-label Descripción
+            textarea.form-control(
+              name="descripcion" 
+              rows="3"
+            )= producto ? (producto.descripcion || '') : ''
+          
+          .d-grid.gap-2.d-md-flex.justify-content-md-end
+            a.btn.btn-secondary.me-md-2(href="/stock/productos") Cancelar
+            button.btn.btn-primary(type="submit")= producto ? 'Actualizar' : 'Guardar'

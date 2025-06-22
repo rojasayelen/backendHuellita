@@ -1,0 +1,117 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Huellitas Felices - #{title || 'Gestión de Stock'}
+    
+    // Bootstrap CSS
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous")
+    
+    // Bootstrap Icons
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css")
+    
+    // Estilos personalizados
+    style
+      include ../public/css/styles.css
+    
+    block styles
+
+  body
+    // Navbar
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+      .container
+        a.navbar-brand(href="/")
+          i.bi.bi-heart-pulse.me-2
+          | Huellitas Felices
+        button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        .collapse.navbar-collapse#navbarNav
+          ul.navbar-nav.me-auto
+            li.nav-item
+              a.nav-link(href="/stock" class=activePath === '/stock' ? 'active' : '') 
+                i.bi.bi-box-seam.me-1
+                | Stock
+            li.nav-item
+              a.nav-link(href="/turnos" class=activePath === '/turnos' ? 'active' : '') 
+                i.bi.bi-calendar3.me-1
+                | Turnos
+            li.nav-item
+              a.nav-link(href="/clientes" class=activePath === '/clientes' ? 'active' : '') 
+                i.bi.bi-people.me-1
+                | Clientes
+          ul.navbar-nav
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown")
+                i.bi.bi-person-circle.me-1
+                | #{user.nombre || 'Usuario'}
+              ul.dropdown-menu.dropdown-menu-end
+                li
+                  a.dropdown-item(href="/perfil") 
+                    i.bi.bi-person.me-2
+                    | Perfil
+                li
+                  hr.dropdown-divider
+                li
+                  a.dropdown-item(href="/logout") 
+                    i.bi.bi-box-arrow-right.me-2
+                    | Cerrar sesión
+
+    // Contenido principal
+    main.container.my-4
+      // Breadcrumb
+      nav(aria-label="breadcrumb").mb-4
+        ol.breadcrumb
+          block breadcrumb
+            li.breadcrumb-item
+              a(href="/") Inicio
+        
+      // Alertas flash
+      if messages.error
+        .alert.alert-danger.alert-dismissible.fade.show
+          = messages.error
+          button.btn-close(type="button" data-bs-dismiss="alert")
+      if messages.success
+        .alert.alert-success.alert-dismissible.fade.show
+          = messages.success
+          button.btn-close(type="button" data-bs-dismiss="alert")
+      if messages.info
+        .alert.alert-info.alert-dismissible.fade.show
+          = messages.info
+          button.btn-close(type="button" data-bs-dismiss="alert")
+      
+      // Bloque de contenido
+      block content
+
+    // Footer
+    footer.bg-dark.text-white.py-4.mt-4
+      .container
+        .row
+          .col-md-4
+            h5 Huellitas Felices
+            p Cuidando a tus mascotas desde 2023
+          .col-md-4
+            h5 Contacto
+            p
+              i.bi.bi-geo-alt.me-2
+              | Av. Principal 123, Ciudad
+            p
+              i.bi.bi-telephone.me-2
+              | +54 11 1234-5678
+          .col-md-4
+            h5 Horario
+            p Lunes a Viernes: 9:00 - 20:00
+            p Sábados: 9:00 - 14:00
+        .text-center.mt-3
+          p.mb-0 &copy; 2023 Huellitas Felices - Todos los derechos reservados
+
+    // Scripts
+    // Bootstrap Bundle con Popper
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous")
+    
+    // Moment.js para manejo de fechas
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/es.min.js")
+    
+    // Scripts personalizados
+    block scripts
