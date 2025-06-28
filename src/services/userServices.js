@@ -1,11 +1,6 @@
 const Persona = require("../models/personaModel");
 const User = require("../models/userModel");
 
-console.log('--- Depurando userService.js ---');
-console.log('Tipo de Persona importado:', typeof Persona);
-console.log('Contenido de Persona:', Persona);
-console.log('--- Fin de la Depuración ---');
-
 const create = async (userData) => {
   const { nombre, apellido, email, password, rol } = userData;
 
