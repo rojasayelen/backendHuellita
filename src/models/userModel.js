@@ -18,11 +18,10 @@ const userSchema = new Schema({
         enum: ["admin", "user", "guest"],
         default: ["user"]
     },
-    estado: {
-        type: String,
-        enum: ["activo", "inactivo"],
-        default: "activo"
-    },
+    activo: {
+        type: Boolean,
+        default: true  // Nuevo campo con valor por defecto
+    }
 }, {
     timestamps: true
 });
