@@ -57,7 +57,14 @@ app.use(errorHandler);
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Iniciar servidor
-app.listen(port, () => {
-  console.log(`Server corriendo en http://localhost:${port}`);
-});
+// // Iniciar servidor local solamente
+// app.listen(port, () => {
+//   console.log(`Server corriendo en http://localhost:${port}`);
+// });
+
+//Iniciar servidor en Vercel o en local
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server corriendo en http://localhost:${port}`);
+    });
+}
