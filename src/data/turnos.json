@@ -110,5 +110,19 @@
     "tipoConsulta": "dolor",
     "profesional": "Dra. Martinez",
     "estado": "confirmado"
+  },
+  {
+    "id": 9,
+    "apellido": "Lanselota",
+    "nombre": "Nicolas",
+    "dni": "111111",
+    "mascota": "lazy",
+    "especie": "loro",
+    "raza": "labrador",
+    "fecha": "2025-05-06",
+    "hora": "18:16",
+    "tipoConsulta": "dolor",
+    "profesional": "Dra. Martinez",
+    "estado": "pendiente"
   }
 ]

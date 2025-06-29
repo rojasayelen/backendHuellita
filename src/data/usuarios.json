@@ -1,27 +1,32 @@
 [
   {
+    "id": 9,
+    "nombre": "123123",
+    "apellido": "1212212",
+    "email": "camiladiaz9@gemail.com",
+    "password": "pass9*"
+  },
+  {
     "id": 13,
-    "nombre": "luciano",
-    "apellido": "asjkn",
+    "nombre": "Lucia",
+    "apellido": "lopez",
     "email": "antonioRosales1@gmail.com",
     "password": "4321",
     "domicilio": "jhgouyg",
     "telefono": "ouygouyg"
   },
   {
-    "id": 12,
-    "nombre": "luciano",
-    "apellido": "sdfuolhg|uygo",
-    "email": "antonioRosales12@gmail.com",
-    "password": "4321",
-    "domicilio": "ouyg",
-    "telefono": "65219654654"
+    "id": 14,
+    "nombre": "Admin",
+    "apellido": "Test",
+    "email": "admin@test.com",
+    "password": "$2b$10$LL6m5W6Iqs1jolFG2qDWP.XzPL.q99k..njZ8P.wIQpM8kRwkVaCC"
   },
   {
-    "id": 9,
-    "nombre": "123123",
-    "apellido": "1212212",
-    "email": "camiladiaz9@gemail.com",
-    "password": "pass9*"
+    "id": 15,
+    "nombre": "luciano",
+    "apellido": "madroñal",
+    "email": "lucianoumc1@gmai.com",
+    "password": "$2b$10$zJ8eipJ8lEjdfYVtmExgCeuxqXx.C9y4uWqO8UWsJb7vo3g/FtTLe"
   }
 ]

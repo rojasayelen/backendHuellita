@@ -1,16 +1,21 @@
 const express = require("express");
-const methodOverride = require('method-override');
+const methodOverride = require("method-override");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const path = require("path");
 const connectDB = require("./src/config/db");
 
-connectDB(); 
+// connectDB();
 
 const app = express();
 
 // Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); //para parsear el json del body
+app.use(express.urlencoded({ extended: true })); //para leer los datos del formulario
+app.use(cookieParser()); //para parsear cookies
+
+// Servir archivos estáticos
+app.use(express.static(path.join(__dirname, "src/views")));
 
 // Método override para PUT/DELETE desde formularios
 app.use(
@@ -37,25 +42,39 @@ app.use((req, res, next) => {
   next();
 });
 
+// Importar middlewares de autenticación
+const { authMiddleware } = require("./src/middleware/authMiddleware");
 
+// Ruta base - redirigir al login si no está autenticado, al dashboard si está autenticado
 app.get("/", (req, res) => {
-  res.render("index", { title: "Huellitas Felices" });
+  const token = req.cookies?.token;
+  if (token) {
+    res.redirect("/dashboard");
+  } else {
+    res.redirect("/auth/login");
+  }
 });
+
+// Ruta del dashboard (protegida)
+const userController = require("./src/controllers/userController");
+app.get("/dashboard", authMiddleware, userController.getDashboard);
 
 // Importar routers
 const consultaTurnosRouter = require("./src/routes/consultaTurnosRouter");
 const userRouter = require("./src/routes/userRouter");
+const authRouter = require("./src/routes/authRouter");
 
 // Usar routers
 app.use("/turnos", consultaTurnosRouter);
 app.use("/usuarios", userRouter);
+app.use("/auth", authRouter);
 
-// Manejador de errores
-const errorHandler = require('./src/middleware/errorHandler');
+const errorHandler = require("./src/middleware/errorHandler");
+
 app.use(errorHandler);
 
 // Archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 // // Iniciar servidor local solamente
 // app.listen(port, () => {

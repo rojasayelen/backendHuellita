@@ -1,0 +1,201 @@
+doctype html
+html
+  head
+    title Panel Principal - Huellitas Felices
+    style.
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #34495e;
+      }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa;
+        color: #333;
+      }
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 20px 0;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .user-info {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        text-align: right;
+      }
+      .user-info p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+      .user-name {
+        font-weight: 600;
+        color: var(--primary-color) !important;
+      }
+      .logout-btn {
+        background: var(--danger-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 12px;
+        margin-top: 5px;
+        display: inline-block;
+      }
+      .logout-btn:hover {
+        background: #c0392b;
+      }
+      .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+        border-left: 4px solid var(--success-color);
+      }
+      h1 {
+        color: var(--secondary-color);
+        margin-bottom: 10px;
+      }
+      .subtitle {
+        color: #7f8c8d;
+        font-size: 18px;
+      }
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-align: center;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .card-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+      }
+      .card-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+      .card-description {
+        color: #7f8c8d;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background-color: #2980b9;
+      }
+      .btn-success {
+        background-color: var(--success-color);
+      }
+      .btn-success:hover {
+        background-color: #27ae60;
+      }
+      .btn-warning {
+        background-color: var(--warning-color);
+      }
+      .btn-warning:hover {
+        background-color: #e67e22;
+      }
+      .quick-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
+      footer {
+        text-align: center;
+        margin-top: 50px;
+        padding: 20px;
+        color: #7f8c8d;
+        font-size: 14px;
+      }
+
+  body
+    .dashboard-container
+      header
+        .user-info
+          p Bienvenido, 
+            span.user-name #{user ? user.nombre + ' ' + user.apellido : 'Usuario'}
+          p #{user ? user.email : ''}
+          a.logout-btn(href="/auth/logout") Cerrar Sesión
+        
+        h1 Panel de Administración
+        p.subtitle Huellitas Felices - Sistema de Gestión
+
+      if loginSuccess
+        .success-message
+          p ¡Bienvenido! Has iniciado sesión correctamente.
+
+      .cards-container
+        .card
+          .card-icon 📋
+          .card-title Gestión de Turnos
+          .card-description Administra los turnos médicos, consultas y agenda
+          a.btn.btn-success(href="/turnos") Acceder
+
+        .card
+          .card-icon 👥
+          .card-title Gestión de Usuarios
+          .card-description Administra usuarios, permisos y accesos al sistema
+          a.btn(href="/usuarios") Acceder
+
+        .card
+          .card-icon 🐾
+          .card-title Mascotas
+          .card-description Gestiona el registro de mascotas y sus historiales
+          a.btn.btn-warning(href="#") Próximamente
+
+        .card
+          .card-icon 📊
+          .card-title Reportes
+          .card-description Genera reportes y estadísticas del consultorio
+          a.btn.btn-warning(href="#") Próximamente
+
+      .quick-actions
+        a.btn(href="/turnos/nuevo") + Nuevo Turno
+        a.btn(href="/usuarios/admin") Administrar Usuarios
+        a.btn(href="/turnos") Ver Todos los Turnos
+
+      footer
+        p Sistema desarrollado para Huellitas Felices © #{new Date().getFullYear()}
