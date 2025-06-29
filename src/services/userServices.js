@@ -1,163 +1,316 @@
 const Persona = require("../models/personaModel");
 const User = require("../models/userModel");
+const bcrypt = require("bcrypt");
+const fs = require("fs").promises;
+const path = require("path");
 
-const create = async (userData) => {
-  const { nombre, apellido, email, password } = userData;
-  // En un escenario de producción, aquí se iniciaría una "sesión" o "transacción"
-  // para asegurar que si falla la creación del User, también se deshaga la creación de la Persona.
-  // Por ahora, lo mantenemos simple.
+// Función temporal para crear usuarios en archivo JSON
+const createUserInJSON = async (userData) => {
+  try {
+    const { nombre, apellido, email, password } = userData;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
+    const usersPath = path.join(__dirname, "../data/usuarios.json");
+    const usersData = await fs.readFile(usersPath, "utf-8");
+    const users = JSON.parse(usersData);
 
-    try {
-      const persona = new Persona({ nombre, apellido, email });
-      // --- PASO 2: Crear la entidad User, enlazándola a la Persona ---
-      // Usamos el ID de la persona recién creada para el campo de referencia.
-      const nuevoUsuario = await User.create({
-        password: password,
-        datosPersonales: persona._id,
-      });
-      return nuevoUsuario;
-    }catch (error) {
-      if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
-          const customError = new Error(`El email '${email}' ya está registrado.`);
-          customError.statusCode = 400; // Bad Request
-          throw customError;
-        }
-      throw error;
-    }
-  };
+    // Generar nuevo ID
+    const newId = Math.max(...users.map((u) => u.id), 0) + 1;
 
-const getAll = async () => {
-  const usuarios = await User.find().populate("datosPersonales");
-  return usuarios;
+    const newUser = {
+      id: newId,
+      nombre,
+      apellido,
+      email,
+      password: hashedPassword,
+    };
+
+    users.push(newUser);
+    await fs.writeFile(usersPath, JSON.stringify(users, null, 2));
+
+    return newUser;
+  } catch (error) {
+    throw new Error(`Error creando usuario en JSON: ${error.message}`);
+  }
 };
 
+const getAll = async () => {
+  try {
+    const usuarios = await User.find().populate("datosPersonales");
+    return usuarios;
+  } catch (error) {
+    // Fallback a archivo JSON
+    console.log("MongoDB no disponible, usando archivo JSON como fallback");
+    return await getAllFromJSON();
+  }
+};
 
-// const updateUserForm = async (__, res) => {
-//   res.render("updateUserForm");
-// };
+// Función temporal para obtener usuarios desde archivo JSON
+const getAllFromJSON = async () => {
+  try {
+    const usersPath = path.join(__dirname, "../data/usuarios.json");
+    const usersData = await fs.readFile(usersPath, "utf-8");
+    const users = JSON.parse(usersData);
 
-// const updateUsuarios = async (req, res) => {
-//   try {
-//     const { nombre, apellido, email } = req.body;
+    // Convertir formato para compatibilidad
+    return users.map((user) => ({
+      _id: user.id,
+      datosPersonales: {
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+      },
+      password: user.password,
+    }));
+  } catch (error) {
+    throw new Error(`Error leyendo usuarios desde JSON: ${error.message}`);
+  }
+};
 
-//     if (!nombre || !apellido) {
-//       return res.render("updateUserResponse", {
-//         mensaje:
-//           "Todos los campos son queredidos: nombre, apellido.",
-//       });
-//       s;
-//     }
+// Obtener usuario por email
+const getByEmail = async (email) => {
+  try {
+    const persona = await Persona.findOne({ email });
+    if (!persona) return null;
 
-//     const usuarios = await leerUsuariosDesdeArchivo();
+    const user = await User.findOne({ datosPersonales: persona._id }).populate(
+      "datosPersonales"
+    );
+    return user;
+  } catch (error) {
+    // Fallback a archivo JSON
+    console.log("MongoDB no disponible, usando archivo JSON como fallback");
+    return await getByEmailFromJSON(email);
+  }
+};
 
-//     currentUser = usuarios.find((user) => user.email === email);
+// Función temporal para obtener usuario por email desde JSON
+const getByEmailFromJSON = async (email) => {
+  try {
+    const usersPath = path.join(__dirname, "../data/usuarios.json");
+    const usersData = await fs.readFile(usersPath, "utf-8");
+    const users = JSON.parse(usersData);
 
-//     if (!currentUser) {
-//       return res.render("updateUserResponse", {
-//         mensaje: "Usuario inexistente",
-//       });
-//     }
+    const user = users.find((u) => u.email === email);
+    if (!user) return null;
 
-//     currentUser.nombre = nombre;
-//     currentUser.apellido = apellido;   
+    // Convertir formato para compatibilidad
+    return {
+      _id: user.id,
+      datosPersonales: {
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+      },
+      password: user.password,
+    };
+  } catch (error) {
+    throw new Error(`Error buscando usuario por email: ${error.message}`);
+  }
+};
 
-//     const newUsuarios = usuarios.filter((user) => user.id !== currentUser.id);
+// Obtener usuario por ID
+const getById = async (id) => {
+  try {
+    const user = await User.findById(id).populate("datosPersonales");
+    return user;
+  } catch (error) {
+    // Fallback a archivo JSON
+    console.log("MongoDB no disponible, usando archivo JSON como fallback");
+    return await getByIdFromJSON(id);
+  }
+};
 
-//     newUsuarios.push(currentUser);
+// Función temporal para obtener usuario por ID desde JSON
+const getByIdFromJSON = async (id) => {
+  try {
+    const usersPath = path.join(__dirname, "../data/usuarios.json");
+    const usersData = await fs.readFile(usersPath, "utf-8");
+    const users = JSON.parse(usersData);
 
-//     await fs.writeFile(rutaJSON, JSON.stringify(newUsuarios, null, 2), "utf-8");
+    const user = users.find((u) => u.id === parseInt(id));
+    if (!user) return null;
 
-//     const { password: _, ...usuarioCreadoSinPassword } = currentUser;
+    // Convertir formato para compatibilidad
+    return {
+      _id: user.id,
+      datosPersonales: {
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+      },
+      password: user.password,
+    };
+  } catch (error) {
+    throw new Error(`Error buscando usuario por ID: ${error.message}`);
+  }
+};
 
-//     return res.render("updateUserResponse", {
-//       usuario: usuarioCreadoSinPassword,
-//     });
-//   } catch (error) {
-//     return res.render("updateUserResponse", {
-//       mensaje: "Error en interno del servidor",
-//     });
-//   }
-// };
+// Verificar credenciales de usuario
+const checkCredentials = async (email, password) => {
+  try {
+    const user = await getByEmail(email);
+    if (!user) return null;
 
-// const getAdminUsuarios = async (req, res) => {
-//   try {
-//     const usuarios = await leerUsuariosDesdeArchivo();
-//     res.render("adminUser", { usuarios }); // Renderiza vista adminUser.pug
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ error: "Error al cargar la vista de administración" });
-//   }
-// };
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    return isValidPassword ? user : null;
+  } catch (error) {
+    throw error;
+  }
+};
 
-// const deleteUsuarios = async (req, res) => {
-//     try {
-//       const { id } = req.params;
-//       const usuarios = await leerUsuariosDesdeArchivo();
-  
-//       const indiceUsuario = usuarios.findIndex(
-//         (user) => user.id === parseInt(id)
-//       );
-  
-//       if (indiceUsuario === -1) {
-       
-//         return res.status(404).render("adminUser", { 
-//           usuarios: usuarios, 
-//           error: "Usuario no encontrado",
-//         });
-//       }
-  
-//       usuarios.splice(indiceUsuario, 1);
-  
-//       await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-  
-//       res.redirect("/usuarios/admin"); 
-//     } catch (error) {
-//       console.error("Error al eliminar usuario:", error); 
-//       const usuarios = await leerUsuariosDesdeArchivo(); 
-//       res.status(500).render("adminUser", {
-//         usuarios: usuarios, 
-//         error: "Error interno del servidor al eliminar usuario",
-//       });
-//     }
-//   };
+// Actualizar usuario por email
+const updateByEmail = async (email, updateData) => {
+  try {
+    const persona = await Persona.findOne({ email });
+    if (!persona) return null;
 
-// //#region  login
-// const loginForm = async (__, res) => {
-//   res.render("loginForm");
-// };
+    const updatedPersona = await Persona.findByIdAndUpdate(
+      persona._id,
+      updateData,
+      { new: true }
+    );
 
-// const loginUser = async (req, res) => {
-//   const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-//   const data = await fs.readFile(rutaJSON, "utf-8");
-//   const usuarios = JSON.parse(data);
+    const user = await User.findOne({
+      datosPersonales: updatedPersona._id,
+    }).populate("datosPersonales");
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
 
-//   const { email, password } = req.body;
+// Eliminar usuario por ID
+const deleteById = async (id) => {
+  try {
+    const user = await User.findById(id).populate("datosPersonales");
+    if (!user) return false;
 
-//   const user = usuarios.find(
-//     (u) => u.email === email && u.password === password
-//   );
+    // Eliminar la persona asociada
+    await Persona.findByIdAndDelete(user.datosPersonales._id);
 
-//   if (user) {
-//     return res.render("loginForm", { mensaje: "Login exitoso" });
-//   } else {
-//     return res.render("loginForm", {
-//       mensaje: "Credenciales incorrectas",
-//     });
-//   }
-// };
-//#endregion
+    // Eliminar el usuario
+    await User.findByIdAndDelete(id);
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const create = async (userData) => {
+  const { nombre, apellido, email, password, rol } = userData;
+  // createUserInJSON(userData);
+  try {
+    // Verificar si el email ya existe
+    const personaExistente = await Persona.findOne({ email });
+    if (personaExistente) {
+      const error = new Error(`El email '${email}' ya está registrado.`);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const instanciaPersona = new Persona({ nombre, apellido, email });
+    await instanciaPersona.save();
+
+    // Hash de la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const nuevoUsuario = await User.create({
+      password: hashedPassword,
+      datosPersonales: instanciaPersona._id,
+      roles: rol ? [rol] : ["user"],
+    });
+    return nuevoUsuario;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Obtener usuario por ID
+const obtenerUsuarioPorId = async (id) => {
+  return await User.findById(id).populate("datosPersonales");
+};
+
+// Actualizar usuario por ID
+const actualizarUsuarioPorId = async (id, updateData) => {
+  const usuario = await User.findById(id).populate("datosPersonales");
+  if (!usuario) return null;
+
+  // Actualizar datos personales
+  if (updateData.nombre || updateData.apellido) {
+    await Persona.findByIdAndUpdate(usuario.datosPersonales._id, {
+      nombre: updateData.nombre || usuario.datosPersonales.nombre,
+      apellido: updateData.apellido || usuario.datosPersonales.apellido,
+    });
+  }
+
+  // Actualizar contraseña si se proporciona
+  if (updateData.password) {
+    updateData.password = await bcrypt.hash(updateData.password, 10);
+  }
+
+  // Actualizar usuario
+  return await User.findByIdAndUpdate(
+    id,
+    { $set: updateData },
+    { new: true }
+  ).populate("datosPersonales");
+};
+
+// Desactivar usuario
+const desactivarUsuario = async (id) => {
+  return await User.findByIdAndUpdate(
+    id,
+    { $set: { activo: false } },
+    { new: true }
+  ).populate("datosPersonales");
+};
+
+// Reactivar usuario
+const reactivarUsuario = async (id) => {
+  return await User.findByIdAndUpdate(
+    id,
+    { $set: { activo: true } },
+    { new: true }
+  ).populate("datosPersonales");
+};
+
+// Eliminación física
+const eliminarUsuarioFisicamente = async (id) => {
+  const usuario = await User.findById(id);
+  if (!usuario) return null;
+
+  await Persona.findByIdAndDelete(usuario.datosPersonales);
+  return await User.findByIdAndDelete(id);
+};
+
+// Verificar credenciales
+const verificarCredenciales = async (email, password) => {
+  const persona = await Persona.findOne({ email });
+  if (!persona) return null;
+
+  const usuario = await User.findOne({ datosPersonales: persona._id }).populate(
+    "datosPersonales"
+  );
+  if (!usuario || !usuario.activo) return null;
+
+  const match = await bcrypt.compare(password, usuario.password);
+  return match ? usuario : null;
+};
 
 module.exports = {
   create,
   getAll,
-  // postUsuarios,
-  // getAdminUsuarios,
-  // updateUserForm,
-  // updateUsuarios,
-  // deleteUsuarios,
-  // loginForm,
-  // loginUser,
+  getByEmail,
+  getById,
+  checkCredentials,
+  updateByEmail,
+  deleteById,
+  obtenerUsuarioPorId,
+  actualizarUsuarioPorId,
+  desactivarUsuario,
+  reactivarUsuario,
+  eliminarUsuarioFisicamente,
+  verificarCredenciales,
 };
-

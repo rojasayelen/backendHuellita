@@ -1,5 +1,4 @@
 doctype html
-doctype html
 html
   head
     title Iniciar Sesión - Huellitas Felices
@@ -71,6 +70,10 @@ html
       button[type="submit"]:hover {
         background-color: #2980b9;
       }
+      button[type="submit"]:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
       .message {
         margin-top: 20px;
         padding: 12px;
@@ -100,28 +103,101 @@ html
       .footer-links a:hover {
         text-decoration: underline;
       }
+      .loading {
+        display: none;
+        text-align: center;
+        margin-top: 10px;
+      }
+      .spinner {
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #3498db;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
 
   body
     .login-container
       h1 Iniciar Sesión
       
-      form(action="/login" method="POST")
+      form#loginForm(action="/auth/login" method="POST")
         .form-group
           label(for="email") Correo Electrónico:
-          input(type="email" name="email" required placeholder="ejemplo@correo.com")
+          input(type="email" name="email" id="email" required placeholder="ejemplo@correo.com")
         
         .form-group
           label(for="password") Contraseña:
-          input(type="password" name="password" required placeholder="Ingresa tu contraseña")
+          input(type="password" name="password" id="password" required placeholder="Ingresa tu contraseña")
         
-        button(type="submit") Ingresar
+        button(type="submit" id="submitBtn") Ingresar
+        
+        .loading#loading
+          .spinner
+          p Procesando...
 
-      if mensaje
-        div(class=mensaje.error ? 'message error-message' : 'message success-message')
-          p= mensaje.texto || mensaje
+      #messageContainer
 
       .footer-links
         p ¿No tienes cuenta? 
-          a(href="/registro") Regístrate aquí
+          a(href="/usuarios/crear") Regístrate aquí
         p
           a(href="/recuperar-contrasena") ¿Olvidaste tu contraseña?
+
+    script(src="/auth.js")
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const messageContainer = document.getElementById('messageContainer');
+
+        // Mostrar mensaje si viene del servidor
+        if (document.querySelector('.message')) {
+          const serverMessage = document.querySelector('.message');
+          messageContainer.appendChild(serverMessage.cloneNode(true));
+          serverMessage.remove();
+        }
+
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          
+          // Mostrar loading
+          submitBtn.disabled = true;
+          loading.style.display = 'block';
+          
+          try {
+            const result = await authManager.login(email, password);
+            
+            if (result.success) {
+              // Login exitoso, redirigir al dashboard
+              window.location.href = '/dashboard';
+            } else {
+              // Mostrar error
+              showMessage(result.error, 'error');
+            }
+          } catch (error) {
+            showMessage('Error de conexión', 'error');
+          } finally {
+            // Ocultar loading
+            submitBtn.disabled = false;
+            loading.style.display = 'none';
+          }
+        });
+
+        function showMessage(text, type) {
+          messageContainer.innerHTML = `
+            <div class="message ${type === 'error' ? 'error-message' : 'success-message'}">
+              <p>${text}</p>
+            </div>
+          `;
+        }
+      });
