@@ -1,29 +1,29 @@
 [
   {
     "id": 1,
-    "apellido": "García",
-    "nombre": "Ana",
+    "apellido": "Solís",
+    "nombre": "Andrea",
     "dni": "30222333",
     "mascota": "Rex",
     "especie": "perro",
     "raza": "pastor alemán",
     "fecha": "2025-05-27",
     "hora": "14:00",
-    "profesional": "Dr. Fernández",
+    "profesional": "Carlos Lopez",
     "tipoConsulta": "Vacunación",
     "estado": true
   },
   {
     "id": 2,
     "apellido": "López",
-    "nombre": "Carlos",
+    "nombre": "Andrés",
     "dni": "29555111",
     "mascota": "Michi",
     "especie": "gato",
     "raza": "siamés",
     "fecha": "2025-05-30",
     "hora": "09:30",
-    "profesional": "Dr. Fernández",
+    "profesional": "Carlos Lopez",
     "tipoConsulta": "Chequeo general",
     "estado": true
   },
@@ -37,11 +37,10 @@
     "raza": "labrador",
     "fecha": "2025-06-02",
     "hora": "11:00",
-    "profesional": "Juan Pérez",
+    "profesional": "Luis Martínez",
     "tipoConsulta": "Baño",
     "estado": true
   },
-  
   {
     "id": 4,
     "apellido": "Suarez",
@@ -52,11 +51,10 @@
     "raza": "caniche",
     "fecha": "2025-06-02",
     "hora": "14:00",
-    "profesional": "Roxana Gonzalez",
+    "profesional": "Ana García",
     "tipoConsulta": "Peluquería",
     "estado": true
   },
-  
   {
     "id": 5,
     "apellido": "Garciarena",
@@ -67,9 +65,64 @@
     "raza": "egipcio",
     "fecha": "2025-06-03",
     "hora": "14:00",
-    "profesional": "Juan Pérez",
+    "profesional": "Luis Martínez",
     "tipoConsulta": "Baño",
     "estado": false
+  },
+  {
+    "id": 7,
+    "apellido": "lopez",
+    "nombre": "Juana",
+    "dni": "12345678",
+    "mascota": "Firulais",
+    "especie": "Perro",
+    "raza": "Labrador",
+    "fecha": "2023-12-15",
+    "hora": "14:30",
+    "tipoConsulta": "Vacunación",
+    "profesional": "Dra. Martinez",
+    "estado": "pendiente"
+  },
+  {
+    "id": 8,
+    "apellido": "lopez",
+    "nombre": "Juana",
+    "dni": "12345678",
+    "mascota": "Firulais",
+    "especie": "Perro",
+    "raza": "Labrador",
+    "fecha": "2023-12-15",
+    "hora": "14:30",
+    "tipoConsulta": "Vacunación",
+    "profesional": "Dra. Martinez",
+    "estado": "pendiente"
+  },
+  {
+    "id": 9,
+    "apellido": "Lanselota",
+    "nombre": "Juan Carlos",
+    "dni": "111111",
+    "mascota": "lazy",
+    "especie": "perro",
+    "raza": "labrador",
+    "fecha": "2024-07-21",
+    "hora": "15:30",
+    "tipoConsulta": "dolor",
+    "profesional": "Dra. Martinez",
+    "estado": "confirmado"
+  },
+  {
+    "id": 9,
+    "apellido": "Lanselota",
+    "nombre": "Nicolas",
+    "dni": "111111",
+    "mascota": "lazy",
+    "especie": "loro",
+    "raza": "labrador",
+    "fecha": "2025-05-06",
+    "hora": "18:16",
+    "tipoConsulta": "dolor",
+    "profesional": "Dra. Martinez",
+    "estado": "pendiente"
   }
-  
 ]

@@ -1,0 +1,129 @@
+doctype html
+html
+  head
+    title Usuario Actualizado - Huellitas Felices
+    style.
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
+      }
+      .confirmation-container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 28px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      h3 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 22px;
+      }
+      .error-message {
+        background-color: #fdecea;
+        color: #d32f2f;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid #d32f2f;
+      }
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid #2e7d32;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      th {
+        background-color: #3498db;
+        color: white;
+        font-weight: 600;
+        padding: 12px 15px;
+        text-align: left;
+      }
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+      tr:hover {
+        background-color: #e9f7fe;
+      }
+      .actions {
+        margin-top: 30px;
+        text-align: center;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin: 0 10px;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background-color: #2980b9;
+      }
+      .btn-secondary {
+        background-color: #95a5a6;
+      }
+      .btn-secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+  body
+    .confirmation-container
+      if error
+        .error-message
+          h3 Error:
+          p= mensaje
+      else if usuario
+        h1 Usuario Actualizado Correctamente
+        .success-message
+          p Los datos del usuario han sido modificados exitosamente.
+
+        h3 Detalles del Usuario:
+        table
+          thead
+            tr
+              th ID
+              th Nombre
+              th Apellido
+              th Email
+          tbody
+            tr
+              td= usuario.id
+              td= usuario.nombre
+              td= usuario.apellido
+              td= usuario.email
+
+        .actions
+          a.btn(href=`/usuarios/${usuario.id}/editar`) Editar Otros Datos
+          a.btn.btn-secondary(href="/usuarios") Volver al Listado

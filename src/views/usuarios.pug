@@ -1,0 +1,135 @@
+doctype html
+html
+  head
+    title Listado de Usuarios - Huellitas Felices
+    style.
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f7fa;
+        color: #333;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .btn {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background-color: #2980b9;
+      }
+      .btn-success {
+        background-color: #2ecc71;
+      }
+      .btn-success:hover {
+        background-color: #27ae60;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      th {
+        background-color: #3498db;
+        color: white;
+        font-weight: 600;
+        padding: 12px 15px;
+        text-align: left;
+        position: sticky;
+        top: 0;
+      }
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+      }
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+      tr:hover {
+        background-color: #e9f7fe;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+      .btn-edit {
+        background-color: #f39c12;
+      }
+      .btn-edit:hover {
+        background-color: #e67e22;
+      }
+      .btn-delete {
+        background-color: #e74c3c;
+      }
+      .btn-delete:hover {
+        background-color: #c0392b;
+      }
+      .no-results {
+        text-align: center;
+        padding: 30px;
+        color: #7f8c8d;
+        font-style: italic;
+      }
+
+  body
+    .container
+      .header-actions
+        h1 Usuarios Registrados
+        a.btn.btn-success(href="/usuarios/nuevo") + Nuevo Usuario
+
+      if usuarios && usuarios.length > 0
+        table
+          thead
+            tr
+              th ID
+              th Nombre
+              th Apellido
+              th Email
+              th Acciones
+          tbody
+            each usuario in usuarios
+              tr
+                td= usuario.id
+                td= usuario.nombre
+                td= usuario.apellido
+                td= usuario.email
+                td.actions
+                  a.btn.btn-sm(href=`/usuarios/${usuario.id}/update`) Editar
+                  a.btn.btn-sm.btn-delete(
+                    href=`/usuarios/${usuario.id}/eliminar`
+                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')"
+                  ) Eliminar
+      else
+        .no-results No hay usuarios registrados

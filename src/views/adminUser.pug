@@ -1,0 +1,109 @@
+doctype html
+html
+  head
+    title Admin Usuarios - Huellitas Felices
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #2c3e50;
+      }
+      .error {
+        color: #e74c3c;
+        font-weight: bold;
+        padding: 10px;
+        background-color: #fadbd8;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+      .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-block;
+        margin-right: 5px;
+      }
+      .btn:hover {
+        background: #2980b9;
+      }
+      .btn-danger {
+        background: #e74c3c;
+      }
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+      .actions {
+        white-space: nowrap;
+      }
+      .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #3498db;
+        text-decoration: none;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+  body
+    h1 Vista de Administración de Usuarios
+    
+    if error
+      p.error= error
+    
+    table
+      thead
+        tr
+          th ID
+          th Nombre
+          th Apellido
+          th Email
+          th Acciones
+      tbody
+        each usuario in usuarios
+          tr
+            td= usuario.id
+            td= usuario.nombre
+            td= usuario.apellido
+            td= usuario.email
+            td.actions
+              form(
+                action=`/usuarios/deleteUsuario/${usuario.id}`
+                method="POST"
+                style="display: inline;"
+              )
+                input(type="hidden" name="_method" value="DELETE")
+                button.btn.btn-danger(
+                  type="submit"
+                  onclick=`return confirm('¿Estás seguro de eliminar a ${usuario.nombre}?')`
+                ) 🗑️ Eliminar
+    
+    a.back-link(href="/usuarios/admin") ← Volver a la lista general

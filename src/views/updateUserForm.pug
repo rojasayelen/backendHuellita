@@ -1,0 +1,141 @@
+doctype html
+html
+  head
+    title Modificar Usuario - Huellitas Felices
+    style.
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
+      }
+      .user-form-container {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+      input[type="text"],
+      input[type="email"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+      }
+      input[type="text"]:focus,
+      input[type="email"]:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+      }
+      button[type="submit"]:hover {
+        background-color: #2980b9;
+      }
+      .message {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 6px;
+        text-align: center;
+        font-size: 14px;
+      }
+      .error-message {
+        background-color: #fdecea;
+        color: #d32f2f;
+        border-left: 4px solid #d32f2f;
+      }
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-left: 4px solid #2e7d32;
+      }
+      .footer-actions {
+        margin-top: 25px;
+        text-align: center;
+      }
+      .footer-actions a {
+        color: #3498db;
+        text-decoration: none;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+      .footer-actions a:hover {
+        text-decoration: underline;
+      }
+
+  body
+    .user-form-container
+      h1 Modificar Usuario
+      
+      form(action="/usuarios/update" method="POST")
+        input(type="hidden" name="_method" value="PUT")
+        
+        .form-group
+          label(for="nombre") Nombre:
+          input(
+            type="text" 
+            name="nombre" 
+            required 
+            placeholder="Ingrese su nombre" 
+            value=(usuario && usuario.nombre) || ''
+          )
+        
+        .form-group
+          label(for="apellido") Apellido:
+          input(
+            type="text" 
+            name="apellido" 
+            required 
+            placeholder="Ingrese su apellido" 
+            value=(usuario && usuario.apellido) || ''
+          )
+        
+        .form-group
+          label(for="email") Email:
+          input(
+            type="email" 
+            name="email" 
+            required 
+            placeholder="ejemplo@correo.com" 
+            value=(usuario && usuario.email) || ''
+          )
+        
+        button(type="submit") Guardar Cambios
