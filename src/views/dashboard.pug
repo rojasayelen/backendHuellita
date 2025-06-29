@@ -31,6 +31,44 @@ html
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .user-info {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        text-align: right;
+      }
+      .user-info p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+      .user-name {
+        font-weight: 600;
+        color: var(--primary-color) !important;
+      }
+      .logout-btn {
+        background: var(--danger-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 12px;
+        margin-top: 5px;
+        display: inline-block;
+      }
+      .logout-btn:hover {
+        background: #c0392b;
+      }
+      .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+        border-left: 4px solid var(--success-color);
       }
       h1 {
         color: var(--secondary-color);
@@ -116,8 +154,18 @@ html
   body
     .dashboard-container
       header
+        .user-info
+          p Bienvenido, 
+            span.user-name #{user ? user.nombre + ' ' + user.apellido : 'Usuario'}
+          p #{user ? user.email : ''}
+          a.logout-btn(href="/auth/logout") Cerrar Sesión
+        
         h1 Panel de Administración
         p.subtitle Huellitas Felices - Sistema de Gestión
+
+      if loginSuccess
+        .success-message
+          p ¡Bienvenido! Has iniciado sesión correctamente.
 
       .cards-container
         .card

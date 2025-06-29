@@ -7,22 +7,23 @@ const {
   obtenerTurno,
   mostrarFormularioEdicion,
   mostrarConfirmacionEliminar,
-  obtenerTurnosFiltrados
+  obtenerTurnosFiltrados,
 } = require("../controllers/consultaTurnosController");
 const manejarConsultaTurnos = require("../middleware/filtroTurnos");
+const { authMiddleware } = require("../middleware/authMiddleware");
 
 // Rutas para vistas
-router.get("/nuevo", (req, res) => res.render("crearTurnos"));
-router.get("/:id/editar", mostrarFormularioEdicion); // Muestra editarTurno.pug
-router.get("/:id/eliminar", mostrarConfirmacionEliminar); // Muestra eliminarTurno.pug
-router.get("/:id", obtenerTurno); // Muestra detalleTurno.pug
+router.get("/nuevo", authMiddleware, (req, res) => res.render("crearTurnos"));
+router.get("/:id/editar", authMiddleware, mostrarFormularioEdicion); // Muestra editarTurno.pug
+router.get("/:id/eliminar", authMiddleware, mostrarConfirmacionEliminar); // Muestra eliminarTurno.pug
+router.get("/:id", authMiddleware, obtenerTurno); // Muestra detalleTurno.pug
 
 // Rutas CRUD
-router.get("/", manejarConsultaTurnos);
-router.post("/", crearTurno);
-router.get("/:id", obtenerTurno);
-router.put("/:id", editarTurno);
-router.delete("/:id", eliminarTurno);
-router.get("/", obtenerTurnosFiltrados);
+router.get("/", authMiddleware, manejarConsultaTurnos);
+router.post("/", authMiddleware, crearTurno);
+router.get("/:id", authMiddleware, obtenerTurno);
+router.put("/:id", authMiddleware, editarTurno);
+router.delete("/:id", authMiddleware, eliminarTurno);
+router.get("/", authMiddleware, obtenerTurnosFiltrados);
 
 module.exports = router;

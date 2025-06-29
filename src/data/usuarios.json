@@ -14,5 +14,12 @@
     "password": "4321",
     "domicilio": "jhgouyg",
     "telefono": "ouygouyg"
+  },
+  {
+    "id": 14,
+    "nombre": "Admin",
+    "apellido": "Test",
+    "email": "admin@test.com",
+    "password": "$2b$10$LL6m5W6Iqs1jolFG2qDWP.XzPL.q99k..njZ8P.wIQpM8kRwkVaCC"
   }
 ]

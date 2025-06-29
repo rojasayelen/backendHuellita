@@ -1,13 +1,14 @@
 const express = require("express");
 const userController = require("../controllers/userController.js");
 const router = express.Router();
+const { authMiddleware } = require("../middleware/authMiddleware");
 
 // Rutas para vistas de administración y lista pública
-router.get("/admin", userController.getAdminUsuarios);
-router.get("/", userController.getUsuarios);
+router.get("/admin", authMiddleware, userController.getAdminUsuarios);
+router.get("/", authMiddleware, userController.getUsuarios);
 
 // Ruta para creación de usuarios (API)
-router.post("/", userController.postUsuarios);
+router.post("/", authMiddleware, userController.postUsuarios);
 
 // // Rutas para el formulario de actualización
 // router.get("/update", userController.updateUserForm);
