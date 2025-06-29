@@ -13,7 +13,15 @@ const userSchema = new Schema({
         required: [true, "La contraseña es un campo obligatorio."],
         minlength: [8, "La contraseña debe tener al menos 8 caracteres."]
     },
-
+    roles: {
+        type: [String],
+        enum: ["admin", "user", "guest"],
+        default: ["user"]
+    },
+    activo: {
+        type: Boolean,
+        default: true  // Nuevo campo con valor por defecto
+    }
 }, {
     timestamps: true
 });

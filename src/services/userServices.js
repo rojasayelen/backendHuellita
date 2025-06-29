@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const fs = require("fs").promises;
 const path = require("path");
 
+//Crear usuario
 const create = async (userData) => {
   const { nombre, apellido, email, password } = userData;
 
@@ -216,123 +217,105 @@ const deleteById = async (id) => {
   } catch (error) {
     throw error;
   }
+  const { nombre, apellido, email, password, rol } = userData;
+
+  try {
+    // Verificar si el email ya existe
+    const personaExistente = await Persona.findOne({ email });
+    if (personaExistente) {
+      const error = new Error(`El email '${email}' ya está registrado.`);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const instanciaPersona = new Persona({ nombre, apellido, email });
+    await instanciaPersona.save();
+
+    // Hash de la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const nuevoUsuario = await User.create({
+      password: hashedPassword,
+      datosPersonales: instanciaPersona._id,
+      roles: rol ? [rol] : ["user"],
+    });
+    return nuevoUsuario;
+  } catch (error) {
+    throw error;
+  }
 };
 
-// const updateUserForm = async (__, res) => {
-//   res.render("updateUserForm");
-// };
+// Obtener usuario por ID
+const obtenerUsuarioPorId = async (id) => {
+  return await User.findById(id).populate("datosPersonales");
+};
 
-// const updateUsuarios = async (req, res) => {
-//   try {
-//     const { nombre, apellido, email } = req.body;
+// Actualizar usuario por ID
+const actualizarUsuarioPorId = async (id, updateData) => {
+  const usuario = await User.findById(id).populate("datosPersonales");
+  if (!usuario) return null;
 
-//     if (!nombre || !apellido) {
-//       return res.render("updateUserResponse", {
-//         mensaje:
-//           "Todos los campos son queredidos: nombre, apellido.",
-//       });
-//       s;
-//     }
+  // Actualizar datos personales
+  if (updateData.nombre || updateData.apellido) {
+    await Persona.findByIdAndUpdate(usuario.datosPersonales._id, {
+      nombre: updateData.nombre || usuario.datosPersonales.nombre,
+      apellido: updateData.apellido || usuario.datosPersonales.apellido,
+    });
+  }
 
-//     const usuarios = await leerUsuariosDesdeArchivo();
+  // Actualizar contraseña si se proporciona
+  if (updateData.password) {
+    updateData.password = await bcrypt.hash(updateData.password, 10);
+  }
 
-//     currentUser = usuarios.find((user) => user.email === email);
+  // Actualizar usuario
+  return await User.findByIdAndUpdate(
+    id,
+    { $set: updateData },
+    { new: true }
+  ).populate("datosPersonales");
+};
 
-//     if (!currentUser) {
-//       return res.render("updateUserResponse", {
-//         mensaje: "Usuario inexistente",
-//       });
-//     }
+// Desactivar usuario
+const desactivarUsuario = async (id) => {
+  return await User.findByIdAndUpdate(
+    id,
+    { $set: { activo: false } },
+    { new: true }
+  ).populate("datosPersonales");
+};
 
-//     currentUser.nombre = nombre;
-//     currentUser.apellido = apellido;
+// Reactivar usuario
+const reactivarUsuario = async (id) => {
+  return await User.findByIdAndUpdate(
+    id,
+    { $set: { activo: true } },
+    { new: true }
+  ).populate("datosPersonales");
+};
 
-//     const newUsuarios = usuarios.filter((user) => user.id !== currentUser.id);
+// Eliminación física
+const eliminarUsuarioFisicamente = async (id) => {
+  const usuario = await User.findById(id);
+  if (!usuario) return null;
 
-//     newUsuarios.push(currentUser);
+  await Persona.findByIdAndDelete(usuario.datosPersonales);
+  return await User.findByIdAndDelete(id);
+};
 
-//     await fs.writeFile(rutaJSON, JSON.stringify(newUsuarios, null, 2), "utf-8");
+// Verificar credenciales
+const verificarCredenciales = async (email, password) => {
+  const persona = await Persona.findOne({ email });
+  if (!persona) return null;
 
-//     const { password: _, ...usuarioCreadoSinPassword } = currentUser;
+  const usuario = await User.findOne({ datosPersonales: persona._id }).populate(
+    "datosPersonales"
+  );
+  if (!usuario || !usuario.activo) return null;
 
-//     return res.render("updateUserResponse", {
-//       usuario: usuarioCreadoSinPassword,
-//     });
-//   } catch (error) {
-//     return res.render("updateUserResponse", {
-//       mensaje: "Error en interno del servidor",
-//     });
-//   }
-// };
-
-// const getAdminUsuarios = async (req, res) => {
-//   try {
-//     const usuarios = await leerUsuariosDesdeArchivo();
-//     res.render("adminUser", { usuarios }); // Renderiza vista adminUser.pug
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ error: "Error al cargar la vista de administración" });
-//   }
-// };
-
-// const deleteUsuarios = async (req, res) => {
-//     try {
-//       const { id } = req.params;
-//       const usuarios = await leerUsuariosDesdeArchivo();
-
-//       const indiceUsuario = usuarios.findIndex(
-//         (user) => user.id === parseInt(id)
-//       );
-
-//       if (indiceUsuario === -1) {
-
-//         return res.status(404).render("adminUser", {
-//           usuarios: usuarios,
-//           error: "Usuario no encontrado",
-//         });
-//       }
-
-//       usuarios.splice(indiceUsuario, 1);
-
-//       await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-
-//       res.redirect("/usuarios/admin");
-//     } catch (error) {
-//       console.error("Error al eliminar usuario:", error);
-//       const usuarios = await leerUsuariosDesdeArchivo();
-//       res.status(500).render("adminUser", {
-//         usuarios: usuarios,
-//         error: "Error interno del servidor al eliminar usuario",
-//       });
-//     }
-//   };
-
-// //#region  login
-// const loginForm = async (__, res) => {
-//   res.render("loginForm");
-// };
-
-// const loginUser = async (req, res) => {
-//   const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-//   const data = await fs.readFile(rutaJSON, "utf-8");
-//   const usuarios = JSON.parse(data);
-
-//   const { email, password } = req.body;
-
-//   const user = usuarios.find(
-//     (u) => u.email === email && u.password === password
-//   );
-
-//   if (user) {
-//     return res.render("loginForm", { mensaje: "Login exitoso" });
-//   } else {
-//     return res.render("loginForm", {
-//       mensaje: "Credenciales incorrectas",
-//     });
-//   }
-// };
-//#endregion
+  const match = await bcrypt.compare(password, usuario.password);
+  return match ? usuario : null;
+};
 
 module.exports = {
   create,
@@ -342,4 +325,10 @@ module.exports = {
   checkCredentials,
   updateByEmail,
   deleteById,
+  obtenerUsuarioPorId,
+  actualizarUsuarioPorId,
+  desactivarUsuario,
+  reactivarUsuario,
+  eliminarUsuarioFisicamente,
+  verificarCredenciales,
 };

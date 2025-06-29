@@ -1,96 +1,127 @@
 const userService = require("../services/userServices");
 const authService = require("../services/authService");
 
+// Vista única de usuarios
 const getUsuarios = async (req, res) => {
   try {
     const usuarios = await userService.getAll();
-    res.render("usuarios", { usuarios });
+
+    res.render("usuarios", {
+      usuarios,
+      mensaje: req.query.mensaje,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error interno del servidor" });
+    res.status(500).render("error", { error: "Error al cargar los usuarios" });
   }
 };
 
+// Formulario de creación
+const createUserForm = (req, res) => {
+  res.render("createUser");
+};
+
+// Crear nuevo usuario
 const postUsuarios = async (req, res) => {
   try {
     const { nombre, apellido, email, password } = req.body;
     if (!nombre || !apellido || !email || !password) {
       return res
         .status(400)
-        .json({ error: "Todos los campos son requeridos." });
+        .render("error", { error: "Todos los campos son requeridos." });
     }
     const nuevoUsuario = await userService.create(req.body);
-    res
-      .status(201)
-      .json({ message: "Usuario creado exitosamente", usuario: nuevoUsuario });
+    res.redirect("/usuarios?mensaje=Usuario creado exitosamente");
   } catch (error) {
-    res.status(error.statusCode || 500).json({ error: error.message });
+    res
+      .status(error.statusCode || 500)
+      .render("error", { error: error.message });
   }
 };
 
-const updateUserForm = (req, res) => {
-  res.render("updateUserForm");
+// Formulario de actualización
+const updateUserForm = async (req, res) => {
+  try {
+    const usuario = await userService.obtenerUsuarioPorId(req.params.id);
+    res.render("actualizarUsuario", { usuario });
+  } catch (error) {
+    res.status(500).render("error", { error: "Error al cargar formulario" });
+  }
 };
 
+// Actualizar usuario
 const updateUsuarios = async (req, res) => {
   try {
-    const { nombre, apellido, email } = req.body;
-    if (!nombre || !apellido || !email) {
-      return res.render("updateUserResponse", {
-        mensaje: "Nombre, apellido y email son requeridos.",
-      });
-    }
-    const usuarioActualizado = await userService.updateByEmail(email, {
-      nombre,
-      apellido,
-    });
+    const { id } = req.params;
+    const usuarioActualizado = await userService.actualizarUsuarioPorId(
+      id,
+      req.body
+    );
+
     if (!usuarioActualizado) {
-      return res.render("updateUserResponse", {
-        mensaje: "Usuario inexistente.",
-      });
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado");
     }
-    return res.render("updateUserResponse", { usuario: usuarioActualizado });
+
+    res.redirect("/usuarios?mensaje=Usuario actualizado exitosamente");
   } catch (error) {
-    return res.render("updateUserResponse", {
-      mensaje: "Error interno del servidor.",
-    });
+    res.redirect("/usuarios?mensaje=Error al actualizar el usuario");
   }
 };
 
-const getAdminUsuarios = async (req, res) => {
+// Desactivar usuario
+const desactivarUsuario = async (req, res) => {
   try {
-    const usuarios = await userService.getAll();
-    res.render("adminUser", { usuarios });
+    const { id } = req.params;
+    const usuarioActualizado = await userService.desactivarUsuario(id);
+
+    if (!usuarioActualizado) {
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado");
+    }
+
+    res.redirect("/usuarios?mensaje=Usuario desactivado exitosamente");
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error al cargar la vista de administración." });
+    res.redirect("/usuarios?mensaje=Error al desactivar el usuario");
   }
 };
 
+// Reactivar usuario
+const reactivarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioActualizado = await userService.reactivarUsuario(id);
+
+    if (!usuarioActualizado) {
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado");
+    }
+
+    res.redirect("/usuarios?mensaje=Usuario reactivado exitosamente");
+  } catch (error) {
+    res.redirect("/usuarios?mensaje=Error al reactivar el usuario");
+  }
+};
+
+// Eliminar usuario
 const deleteUsuarios = async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    const fueEliminado = await userService.deleteById(id);
+    const { id } = req.params;
+    const fueEliminado = await userService.eliminarUsuarioFisicamente(id);
+
     if (!fueEliminado) {
-      // Si no se encontró, podrías querer mostrar un error en la vista admin.
-      const usuarios = await userService.getAll();
-      return res.status(404).render("adminUser", {
-        usuarios: usuarios,
-        error: "Usuario no encontrado",
-      });
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado");
     }
-    res.redirect("/usuarios/admin");
+
+    res.redirect("/usuarios?mensaje=Usuario eliminado exitosamente");
   } catch (error) {
-    // Manejo de error si la eliminación falla por otra razón
-    res.status(500).send("Error al eliminar el usuario");
+    res.redirect("/usuarios?mensaje=Error al eliminar el usuario");
   }
 };
 
+// Formulario de login
 const loginForm = (req, res) => {
   res.render("loginForm");
 };
 
+// Login de usuario
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -153,21 +184,35 @@ const logoutUser = (req, res) => {
   res.redirect("/auth/login");
 };
 
-const getDashboard = (req, res) => {
+const getDashboard = async (req, res) => {
   // El middleware de autenticación ya verificó el token
   // y agregó la información del usuario a req.user
   res.render("dashboard", {
     user: req.user,
     loginSuccess: req.query.login === "success",
   });
+  const { email, password } = req.body;
+  try {
+    const user = await userService.verificarCredenciales(email, password);
+    if (user) {
+      // Guardar sesión
+      req.session.user = user;
+      return res.redirect("/usuarios");
+    }
+    return res.render("loginForm", { mensaje: "Credenciales incorrectas" });
+  } catch (error) {
+    return res.render("loginForm", { mensaje: "Error interno del servidor" });
+  }
 };
 
 module.exports = {
-  getAdminUsuarios,
   getUsuarios,
   postUsuarios,
+  createUserForm,
   updateUserForm,
   updateUsuarios,
+  desactivarUsuario,
+  reactivarUsuario,
   deleteUsuarios,
   loginForm,
   loginUser,

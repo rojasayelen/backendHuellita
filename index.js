@@ -17,6 +17,7 @@ app.use(cookieParser()); //para parsear cookies
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, "src/views")));
 
+// Método override para PUT/DELETE desde formularios
 app.use(
   methodOverride(function (req, res) {
     if (req.body && typeof req.body === "object" && "_method" in req.body) {
@@ -28,13 +29,14 @@ app.use(
   })
 );
 
-// Configuración de pug y carpeta de vistas
+// Configuración de pug
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "src/views"));
 
-// Determinación del puerto del servidor
+// Determinación del puerto
 const port = process.env.PORT || 3000;
 
+// Middleware de logging
 app.use((req, res, next) => {
   console.log(`Método: ${req.method} | Ruta: ${req.url}`);
   next();
@@ -48,7 +50,7 @@ app.get("/", authMiddleware, (req, res) => {
   res.redirect("/dashboard");
 });
 
-// Ruta del dashboard (protegida)
+// Ruta del dashboard (protegsrc/routes/authRouter.jsida)
 const userController = require("./src/controllers/userController");
 app.get("/dashboard", authMiddleware, userController.getDashboard);
 
@@ -65,6 +67,9 @@ app.use("/auth", authRouter);
 const errorHandler = require("./src/middleware/errorHandler");
 
 app.use(errorHandler);
+
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Iniciar servidor
 app.listen(port, () => {
