@@ -4,27 +4,6 @@ const bcrypt = require("bcrypt");
 const fs = require("fs").promises;
 const path = require("path");
 
-//Crear usuario
-const create = async (userData) => {
-  const { nombre, apellido, email, password } = userData;
-
-  try {
-    // Intentar usar MongoDB primero
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const persona = new Persona({ nombre, apellido, email });
-    const nuevoUsuario = await User.create({
-      password: hashedPassword,
-      datosPersonales: persona._id,
-    });
-    return nuevoUsuario;
-  } catch (error) {
-    // Si MongoDB falla, usar archivo JSON como fallback
-    console.log("MongoDB no disponible, usando archivo JSON como fallback");
-    return await createUserInJSON(userData);
-  }
-};
-
 // Función temporal para crear usuarios en archivo JSON
 const createUserInJSON = async (userData) => {
   try {
@@ -217,8 +196,11 @@ const deleteById = async (id) => {
   } catch (error) {
     throw error;
   }
-  const { nombre, apellido, email, password, rol } = userData;
+};
 
+const create = async (userData) => {
+  const { nombre, apellido, email, password, rol } = userData;
+  // createUserInJSON(userData);
   try {
     // Verificar si el email ya existe
     const personaExistente = await Persona.findOne({ email });

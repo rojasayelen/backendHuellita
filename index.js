@@ -45,12 +45,17 @@ app.use((req, res, next) => {
 // Importar middlewares de autenticación
 const { authMiddleware } = require("./src/middleware/authMiddleware");
 
-// Ruta base de prueba (protegida)
-app.get("/", authMiddleware, (req, res) => {
-  res.redirect("/dashboard");
+// Ruta base - redirigir al login si no está autenticado, al dashboard si está autenticado
+app.get("/", (req, res) => {
+  const token = req.cookies?.token;
+  if (token) {
+    res.redirect("/dashboard");
+  } else {
+    res.redirect("/auth/login");
+  }
 });
 
-// Ruta del dashboard (protegsrc/routes/authRouter.jsida)
+// Ruta del dashboard (protegida)
 const userController = require("./src/controllers/userController");
 app.get("/dashboard", authMiddleware, userController.getDashboard);
 
@@ -69,7 +74,7 @@ const errorHandler = require("./src/middleware/errorHandler");
 app.use(errorHandler);
 
 // Archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Iniciar servidor
 app.listen(port, () => {

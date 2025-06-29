@@ -5,11 +5,14 @@ const userService = require("./userServices");
 class AuthService {
   // Generar token JWT
   generateToken(user) {
+    // Asegurarse de extraer nombre y apellido correctamente
+    const nombre = user.nombre || user.datosPersonales?.nombre;
+    const apellido = user.apellido || user.datosPersonales?.apellido;
     const payload = {
-      userId: user.id,
-      email: user.email,
-      nombre: user.nombre,
-      apellido: user.apellido,
+      userId: user._id || user.id,
+      email: user.email || user.datosPersonales?.email,
+      nombre,
+      apellido,
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET, {
@@ -43,15 +46,21 @@ class AuthService {
         throw new Error("Contraseña incorrecta");
       }
 
-      // Generar token
+      // Generar token con nombre y apellido correctos
       const token = this.generateToken(user);
+
+      // Extraer nombre y apellido para el frontend
+      const nombre = user.nombre || user.datosPersonales?.nombre;
+      const apellido = user.apellido || user.datosPersonales?.apellido;
+      const emailFinal = user.email || user.datosPersonales?.email;
+      const idFinal = user._id || user.id;
 
       return {
         user: {
-          id: user.id,
-          nombre: user.nombre,
-          apellido: user.apellido,
-          email: user.email,
+          id: idFinal,
+          nombre,
+          apellido,
+          email: emailFinal,
         },
         token,
       };

@@ -21,5 +21,12 @@
     "apellido": "Test",
     "email": "admin@test.com",
     "password": "$2b$10$LL6m5W6Iqs1jolFG2qDWP.XzPL.q99k..njZ8P.wIQpM8kRwkVaCC"
+  },
+  {
+    "id": 15,
+    "nombre": "luciano",
+    "apellido": "madroñal",
+    "email": "lucianoumc1@gmai.com",
+    "password": "$2b$10$zJ8eipJ8lEjdfYVtmExgCeuxqXx.C9y4uWqO8UWsJb7vo3g/FtTLe"
   }
 ]

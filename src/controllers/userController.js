@@ -133,17 +133,15 @@ const loginUser = async (req, res) => {
     res.cookie("token", authResult.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      maxAge: 24 * 60 * 60 * 1000,
       sameSite: "strict",
     });
 
-    // Verificar si es una petición AJAX
     const isAjax =
       req.headers["content-type"] === "application/json" ||
       req.headers["x-requested-with"] === "XMLHttpRequest";
 
     if (isAjax) {
-      // Responder con JSON para peticiones AJAX
       return res.json({
         success: true,
         message: "Login exitoso",
@@ -155,19 +153,16 @@ const loginUser = async (req, res) => {
       res.redirect("/dashboard?login=success");
     }
   } catch (error) {
-    // Verificar si es una petición AJAX
     const isAjax =
       req.headers["content-type"] === "application/json" ||
       req.headers["x-requested-with"] === "XMLHttpRequest";
 
     if (isAjax) {
-      // Responder con JSON para peticiones AJAX
       return res.status(401).json({
         success: false,
         message: error.message,
       });
     } else {
-      // Renderizar formulario de login con mensaje de error
       res.render("loginForm", {
         mensaje: {
           texto: error.message,
@@ -184,25 +179,13 @@ const logoutUser = (req, res) => {
   res.redirect("/auth/login");
 };
 
-const getDashboard = async (req, res) => {
+const getDashboard = (req, res) => {
   // El middleware de autenticación ya verificó el token
   // y agregó la información del usuario a req.user
   res.render("dashboard", {
     user: req.user,
     loginSuccess: req.query.login === "success",
   });
-  const { email, password } = req.body;
-  try {
-    const user = await userService.verificarCredenciales(email, password);
-    if (user) {
-      // Guardar sesión
-      req.session.user = user;
-      return res.redirect("/usuarios");
-    }
-    return res.render("loginForm", { mensaje: "Credenciales incorrectas" });
-  } catch (error) {
-    return res.render("loginForm", { mensaje: "Error interno del servidor" });
-  }
 };
 
 module.exports = {
