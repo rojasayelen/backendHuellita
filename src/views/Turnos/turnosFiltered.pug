@@ -145,7 +145,7 @@ html
           tbody
             each turno in turnos
               tr
-                td= turno.id
+                td= turno._id.toString().substring(0, 4)
                 td= turno.apellido
                 td= turno.nombre
                 td= turno.dni
@@ -160,9 +160,8 @@ html
                   - const estado = turno.estado || 'desconocido'
                   span(class=`status status-${estado.toLowerCase()}`)= estado
                 td.actions
-                  a.btn.btn-view(href=`/turnos/${turno.id}`) Ver
-                  a.btn.btn-edit(href=`/turnos/${turno.id}/editar`) Editar
-
+                  a.btn.btn-view(href=`/turnos/${turno._id}`) Ver
+                  a.btn.btn-edit(href=`/turnos/${turno._id}/editar`) Editar
       else if turnos
         .no-results No se encontraron turnos con los filtros aplicados
       else

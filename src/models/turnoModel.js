@@ -1,27 +1,19 @@
-class Turno {
-  constructor({
-    id,
-    cliente = {},
-    mascota = {},
-    fecha,
-    hora,
-    tipoConsulta,
-    profesional,
-    estado = "pendiente" // Cambiado de boolean a string para coincidir con las vistas
-  }) {
-    this.id = id;
-    this.apellido = cliente.apellido || "";
-    this.nombre = cliente.nombre || "";
-    this.dni = cliente.dni || "";
-    this.mascota = mascota.nombre || "";
-    this.especie = mascota.especie || "";
-    this.raza = mascota.raza || "";
-    this.fecha = fecha;
-    this.hora = hora;
-    this.tipoConsulta = tipoConsulta || "";
-    this.profesional = profesional;
-    this.estado = estado;
-  }
-}
+const mongoose = require('mongoose');
 
-module.exports = Turno;
+const turnoSchema = new mongoose.Schema({
+  apellido: { type: String, required: true },
+  nombre: { type: String, required: true },
+  dni: { type: String, required: true },
+  mascota: { type: String, required: true },
+  especie: { type: String, required: true },
+  raza: { type: String },
+  fecha: { type: String, required: true },
+  hora: { type: String, required: true },
+  tipoConsulta: { type: String, required: true },
+  profesional: { type: String, required: true },
+  estado: { type: String, default: 'pendiente' }
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('Turno', turnoSchema);

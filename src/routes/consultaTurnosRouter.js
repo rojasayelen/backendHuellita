@@ -13,7 +13,7 @@ const manejarConsultaTurnos = require("../middleware/filtroTurnos");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 // Rutas para vistas
-router.get("/nuevo", authMiddleware, (req, res) => res.render("crearTurnos"));
+router.get("/nuevo", authMiddleware, (req, res) => res.render("Turnos/crearTurnos"));
 router.get("/:id/editar", authMiddleware, mostrarFormularioEdicion); // Muestra editarTurno.pug
 router.get("/:id/eliminar", authMiddleware, mostrarConfirmacionEliminar); // Muestra eliminarTurno.pug
 router.get("/:id", authMiddleware, obtenerTurno); // Muestra detalleTurno.pug

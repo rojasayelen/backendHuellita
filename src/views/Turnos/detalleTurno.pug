@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Detalle de Turno ##{turno.id} - Huellitas Felices
+    title Detalle de Turno ##{turno._id} - Huellitas Felices
     style.
       body {
         font-family: Arial, sans-serif;
@@ -71,7 +71,7 @@ html
       }
 
   body
-    h1 Detalle del Turno ##{turno.id}
+    h1 Detalle del Turno ##{turno._id}
     
     .info-card
       .info-group
@@ -99,6 +99,6 @@ html
         span= turno.estado
     
     .actions
-      a.btn(href=`/turnos/${turno.id}/editar`) Editar
-      a.btn.btn-danger(href=`/turnos/${turno.id}/eliminar`) Eliminar
+      a.btn(href=`/turnos/${turno._id}/editar`) Editar
+      a.btn.btn-danger(href=`/turnos/${turno._id}/eliminar`) Eliminar
       a.btn.btn-secondary(href="/turnos") Volver al listado
