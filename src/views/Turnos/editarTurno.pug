@@ -53,10 +53,11 @@ html
         text-decoration: none;
       }
   body
-    h1 Editar Turno ##{turno.id}
+    h1 Editar Turno ##{turno._id}
     a(href="/turnos") ← Volver al listado
 
-    form(action=`/turnos/${turno.id}?_method=PUT` method="POST")
+    form(action=`/turnos/${turno._id}` method="POST")
+      input(type="hidden" name="_method" value="PUT")
       // Datos del Cliente
       fieldset
         legend Datos del Cliente
@@ -105,4 +106,4 @@ html
 
       .actions
         button(type="submit") Guardar Cambios
-        a(href=`/turnos/${turno.id}`) Cancelar
+        a(href=`/turnos/${turno._id}`) Cancelar
