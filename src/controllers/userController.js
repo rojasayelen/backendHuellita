@@ -1,225 +1,178 @@
-const fs = require("fs").promises;
-const path = require("path");
-const fileURLToPath = require("url").fileURLToPath;
-const User = require("../models/userModel");
+// userController.js
 
-// // Ruta del archivo JSON
-const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
+const userService = require("../services/userServices");
+const authService = require("../services/authService");
 
-async function leerUsuariosDesdeArchivo() {
-  try {
-    const data = await fs.readFile(rutaJSON, "utf-8");
-    if (data) {
-      return JSON.parse(data);
-    }
-
-    return [];
-  } catch (error) {
-    if (error.code === "ENOENT") {
-      return [];
-    }
-
-    console.error("Error crítico al leer el archivo de usuarios:", error);
-    throw new Error("Error al acceder a la base de datos de usuarios.");
-  }
-}
-
+// Vista única de usuarios
 const getUsuarios = async (req, res) => {
   try {
-    const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-    const data = await fs.readFile(rutaJSON, "utf-8");
-    const usuarios = JSON.parse(data);
-    res.render("usuarios", { usuarios });
+    const usuarios = await userService.getAll();
+    res.render("usuarios", {
+      usuarios,
+      // Pasamos el usuario logueado a la vista para poder comparar IDs
+      currentUser: req.user, 
+      mensaje: req.query.mensaje,
+    });
   } catch (error) {
-    console.error("Error al leer el archivo JSON:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error(error);
+    res.status(500).render("error", { error: "Error al cargar los usuarios" });
   }
 };
 
+// Formulario de creación
+const createUserForm = (req, res) => {
+  res.render("createUser");
+};
+
+// Crear nuevo usuario
 const postUsuarios = async (req, res) => {
   try {
-    // 1. Obtener los datos del body
-
     const { nombre, apellido, email, password } = req.body;
-
-    // 2. Validación de campos requeridos
     if (!nombre || !apellido || !email || !password) {
-      return res.status(400).json({
-        error:
-          "Todos los campos son requeridos: nombre, apellido, mail, password.",
-      });
+      return res.status(400).render("error", { error: "Todos los campos son requeridos." });
     }
-
-    // 3. Leer usuarios existentes del archivo JSON
-    const usuarios = await leerUsuariosDesdeArchivo();
-
-    // 4. Verificar si el email ya existe
-    if (usuarios.some((user) => user.email === email)) {
-      return res
-        .status(400)
-        .json({ error: `El email '${email}' ya está registrado.` });
-    }
-
-    // 5. Generar un nuevo ID para el usuario
-    const nuevoId =
-      usuarios.length > 0 ? Math.max(...usuarios.map((u) => u.id)) + 1 : 1;
-
-    const usuario = new User(nombre, apellido, email, password);
-
-    // 6. Crear el nuevo objeto de usuario
-    const guardarUsuario = {
-      id: nuevoId,
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
-      email: usuario.email,
-      password: usuario.password,
-    };
-
-    // 7. Agregar el nuevo usuario al array
-    usuarios.push(guardarUsuario);
-
-    // 8. Escribir el array actualizado de vuelta al archivo JSON
-    await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-
-    // 9. respuesta de éxito
-
-    const { password: _, ...usuarioCreadoSinPassword } = guardarUsuario;
-
-    res.status(201).json({
-      message: "Usuario creado exitosamente",
-      usuario: usuarioCreadoSinPassword,
-    });
+    await userService.create(req.body);
+    res.redirect("/usuarios?mensaje=Usuario creado exitosamente");
   } catch (error) {
-    console.error("Error en la función postUsuarios:", error);
-    res
-      .status(500)
-      .json({ error: "Error interno del servidor al procesar la solicitud." });
+    res.status(error.statusCode || 500).render("error", { error: error.message });
   }
 };
 
-const updateUserForm = async (__, res) => {
-  res.render("updateUserForm");
+// Formulario de actualización
+const updateUserForm = async (req, res) => {
+  try {
+    const usuario = await userService.obtenerUsuarioPorId(req.params.id);
+    res.render("actualizarUsuario", { usuario });
+  } catch (error) {
+    res.status(500).render("error", { error: "Error al cargar formulario" });
+  }
 };
 
+// Actualizar usuario
 const updateUsuarios = async (req, res) => {
   try {
-    const { nombre, apellido, email } = req.body;
-
-    if (!nombre || !apellido) {
-      return res.render("updateUserResponse", {
-        mensaje:
-          "Todos los campos son queredidos: nombre, apellido.",
-      });
-      s;
+    const { id } = req.params;
+    const usuarioActualizado = await userService.actualizarUsuarioPorId(id, req.body);
+    if (!usuarioActualizado) {
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado");
     }
-
-    const usuarios = await leerUsuariosDesdeArchivo();
-
-    currentUser = usuarios.find((user) => user.email === email);
-
-    if (!currentUser) {
-      return res.render("updateUserResponse", {
-        mensaje: "Usuario inexistente",
-      });
-    }
-
-    currentUser.nombre = nombre;
-    currentUser.apellido = apellido;   
-
-    const newUsuarios = usuarios.filter((user) => user.id !== currentUser.id);
-
-    newUsuarios.push(currentUser);
-
-    await fs.writeFile(rutaJSON, JSON.stringify(newUsuarios, null, 2), "utf-8");
-
-    const { password: _, ...usuarioCreadoSinPassword } = currentUser;
-
-    return res.render("updateUserResponse", {
-      usuario: usuarioCreadoSinPassword,
-    });
+    res.redirect("/usuarios?mensaje=Usuario actualizado exitosamente");
   } catch (error) {
-    return res.render("updateUserResponse", {
-      mensaje: "Error en interno del servidor",
-    });
+    res.redirect(`/usuarios?mensaje=Error al actualizar: ${encodeURIComponent(error.message)}`);
   }
 };
 
-const getAdminUsuarios = async (req, res) => {
+// --- MÉTODOS DE GESTIÓN DE ESTADO Y ELIMINACIÓN (MODIFICADOS) ---
+
+// Desactivar usuario
+const desactivarUsuario = async (req, res) => {
   try {
-    const usuarios = await leerUsuariosDesdeArchivo();
-    res.render("adminUser", { usuarios }); // Renderiza vista adminUser.pug
+    const idADesactivar = req.params.id;
+    const idDeQuienDesactiva = req.user.userId; // Obtenido del token
+
+    const usuarioActualizado = await userService.desactivarUsuarioConPermisos(
+      idADesactivar,
+      idDeQuienDesactiva
+    );
+
+    if (!usuarioActualizado) {
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado para desactivar");
+    }
+    res.redirect("/usuarios?mensaje=Usuario desactivado exitosamente");
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error al cargar la vista de administración" });
+    // Redirigir con el mensaje de error específico del servicio
+    res.redirect(`/usuarios?mensaje=${encodeURIComponent(error.message)}`);
   }
 };
 
-const deleteUsuarios = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const usuarios = await leerUsuariosDesdeArchivo();
-  
-      const indiceUsuario = usuarios.findIndex(
-        (user) => user.id === parseInt(id)
-      );
-  
-      if (indiceUsuario === -1) {
-       
-        return res.status(404).render("adminUser", { 
-          usuarios: usuarios, 
-          error: "Usuario no encontrado",
-        });
-      }
-  
-      usuarios.splice(indiceUsuario, 1);
-  
-      await fs.writeFile(rutaJSON, JSON.stringify(usuarios, null, 2), "utf-8");
-  
-      res.redirect("/usuarios/admin"); 
-    } catch (error) {
-      console.error("Error al eliminar usuario:", error); 
-      const usuarios = await leerUsuariosDesdeArchivo(); 
-      res.status(500).render("adminUser", {
-        usuarios: usuarios, 
-        error: "Error interno del servidor al eliminar usuario",
-      });
+// Reactivar usuario
+const reactivarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioActualizado = await userService.reactivarUsuario(id);
+    if (!usuarioActualizado) {
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado");
     }
-  };
+    res.redirect("/usuarios?mensaje=Usuario reactivado exitosamente");
+  } catch (error) {
+    res.redirect(`/usuarios?mensaje=Error al reactivar: ${encodeURIComponent(error.message)}`);
+  }
+};
 
-//#region  login
-const loginForm = async (__, res) => {
+// Eliminar usuario
+const deleteUsuarios = async (req, res) => {
+  try {
+    const idAEliminar = req.params.id;
+    const idDeQuienElimina = req.user.userId; // Obtenido del token
+
+    const fueEliminado = await userService.eliminarUsuarioConPermisos(
+      idAEliminar,
+      idDeQuienElimina
+    );
+
+    if (!fueEliminado) {
+      return res.redirect("/usuarios?mensaje=Usuario no encontrado para eliminar");
+    }
+    res.redirect("/usuarios?mensaje=Usuario eliminado exitosamente");
+  } catch (error) {
+    // Redirigir con el mensaje de error específico del servicio
+    res.redirect(`/usuarios?mensaje=${encodeURIComponent(error.message)}`);
+  }
+};
+
+// --- MÉTODOS DE AUTENTICACIÓN (SIN CAMBIOS) ---
+
+const loginForm = (req, res) => {
   res.render("loginForm");
 };
 
 const loginUser = async (req, res) => {
-  const rutaJSON = path.join(__dirname, "..", "data", "usuarios.json");
-  const data = await fs.readFile(rutaJSON, "utf-8");
-  const usuarios = JSON.parse(data);
-
-  const { email, password } = req.body;
-
-  const user = usuarios.find(
-    (u) => u.email === email && u.password === password
-  );
-
-  if (user) {
-    return res.render("loginForm", { mensaje: "Login exitoso" });
-  } else {
-    return res.render("loginForm", {
-      mensaje: "Credenciales incorrectas",
+  try {
+    const { email, password } = req.body;
+    const authResult = await authService.authenticateUser(email, password);
+    res.cookie("token", authResult.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "strict",
     });
+    const isAjax = req.headers["x-requested-with"] === "XMLHttpRequest";
+    if (isAjax) {
+      return res.json({ success: true, message: "Login exitoso", user: authResult.user });
+    }
+    res.redirect("/dashboard?login=success");
+  } catch (error) {
+    const isAjax = req.headers["x-requested-with"] === "XMLHttpRequest";
+    if (isAjax) {
+      return res.status(401).json({ success: false, message: error.message });
+    }
+    res.render("loginForm", { mensaje: { texto: error.message, error: true } });
   }
 };
-//#endregion
+
+const logoutUser = (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/auth/login");
+};
+
+const getDashboard = (req, res) => {
+  res.render("dashboard", {
+    user: req.user,
+    loginSuccess: req.query.login === "success",
+  });
+};
 
 module.exports = {
-  getAdminUsuarios,
   getUsuarios,
   postUsuarios,
+  createUserForm,
   updateUserForm,
   updateUsuarios,
+  desactivarUsuario,
+  reactivarUsuario,
   deleteUsuarios,
   loginForm,
   loginUser,
+  logoutUser,
+  getDashboard,
 };

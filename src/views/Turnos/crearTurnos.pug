@@ -1,0 +1,119 @@
+doctype html
+html
+  head
+    title Crear Turno - Huellitas Felices
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      form {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+      input, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+      button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        margin-top: 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+      }
+      button:hover {
+        background: #2980b9;
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #3498db;
+        text-decoration: none;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      fieldset {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      legend {
+        color: #2c3e50;
+        font-weight: bold;
+        padding: 0 10px;
+      }
+  body
+    a.back-link(href="/turnos") ← Volver al listado de turnos
+    h1 Crear nuevo turno
+
+    form(action="/turnos" method="POST")
+      fieldset
+        legend Datos del Cliente
+        label(for="apellido") Apellido:
+        input(type="text" name="apellido" required)
+
+        label(for="nombre") Nombre:
+        input(type="text" name="nombre" required)
+
+        label(for="dni") DNI:
+        input(type="text" name="dni" required)
+
+      fieldset
+        legend Datos de la Mascota
+        label(for="mascota") Nombre de la mascota:
+        input(type="text" name="mascota" required)
+
+        label(for="especie") Especie:
+        input(type="text" name="especie" placeholder="Ej: Perro, Gato, etc.")
+
+        label(for="raza") Raza:
+        input(type="text" name="raza" placeholder="Opcional")
+
+      fieldset
+        legend Datos del Turno
+        label(for="fecha") Fecha:
+        input(type="date" name="fecha" required)
+
+        label(for="hora") Hora:
+        input(type="time" name="hora" required)
+
+        label(for="profesional") Profesional:
+        input(type="text" name="profesional" required)
+
+        label(for="tipoConsulta") Tipo de consulta:
+        input(type="text" name="tipoConsulta" placeholder="Ej: Vacunación, Consulta general")
+
+        label(for="estado") Estado del turno:
+        select(name="estado")
+          option(value="pendiente") Pendiente
+          option(value="confirmado") Confirmado
+        
+
+      button(type="submit") Crear turno

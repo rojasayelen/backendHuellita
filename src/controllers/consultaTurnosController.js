@@ -1,48 +1,25 @@
-const fs = require("fs").promises;
-const path = require("path");
 const Turno = require("../models/turnoModel");
+const mongoose = require("mongoose");
 
-const TURNOS_JSON = path.join(__dirname, "..", "data", "turnos.json");
-
-// Helper functions
-const readTurnos = async () => {
-  const data = await fs.readFile(TURNOS_JSON, "utf-8");
-  return JSON.parse(data);
-};
-
-const writeTurnos = async (turnos) => {
-  await fs.writeFile(TURNOS_JSON, JSON.stringify(turnos, null, 2));
-};
-
-// CRUD Operations
 module.exports = {
   // Crear turno
   crearTurno: async (req, res) => {
     try {
-      const turnos = await readTurnos();
-      const nuevoTurno = new Turno({
-        id: turnos.length + 1,
-        cliente: {
-          apellido: req.body.apellido,
-          nombre: req.body.nombre,
-          dni: req.body.dni,
-        },
-        mascota: {
-          nombre: req.body.mascota,
-          especie: req.body.especie,
-          raza: req.body.raza,
-        },
+      const turno = new Turno({
+        apellido: req.body.apellido,
+        nombre: req.body.nombre,
+        dni: req.body.dni,
+        mascota: req.body.mascota,
+        especie: req.body.especie,
+        raza: req.body.raza,
         fecha: req.body.fecha,
         hora: req.body.hora,
         tipoConsulta: req.body.tipoConsulta,
         profesional: req.body.profesional,
-        estado: req.body.estado || "pendiente",
+        estado: req.body.estado || "pendiente"
       });
 
-      turnos.push(nuevoTurno);
-      await writeTurnos(turnos);
-
-      // Redirecciona después de crear
+      await turno.save();
       res.redirect("/turnos");
     } catch (error) {
       console.error("Error al crear turno:", error);
@@ -50,13 +27,9 @@ module.exports = {
     }
   },
 
-  // Obtener y filtrar turnos (usado por el middleware)
+  // Obtener y filtrar turnos
   obtenerTurnosFiltrados: async (req, res) => {
     try {
-      const rutaJSON = path.join(__dirname, "..", "data", "turnos.json");
-      const data = await fs.readFile(rutaJSON, "utf-8");
-      const turnos = JSON.parse(data);
-
       const {
         id,
         nombre,
@@ -65,96 +38,87 @@ module.exports = {
         profesional,
         tipoConsulta,
         fecha,
-        estado,
+        estado
       } = req.query;
-      let resultados = turnos;
 
-      // -------------------- FILTROS DE TURNOS ---------------------------
-      if (id) {
-        resultados = resultados.filter((turno) => String(turno.id) === id);
+      const filtro = {};
+
+      if (id && mongoose.Types.ObjectId.isValid(id.trim())) {
+        filtro._id = id.trim();
       }
 
       if (nombre) {
-        resultados = resultados.filter((turno) =>
-          turno.nombre.toLowerCase().includes(nombre.toLowerCase())
-        );
+        filtro.nombre = new RegExp(nombre.trim(), "i");
       }
 
       if (apellido) {
-        resultados = resultados.filter((turno) =>
-          turno.apellido.toLowerCase().includes(apellido.toLowerCase())
-        );
+        filtro.apellido = new RegExp(apellido.trim(), "i");
       }
 
       if (mascota) {
-        resultados = resultados.filter((turno) =>
-          turno.mascota.toLowerCase().includes(mascota.toLowerCase())
-        );
+        filtro.mascota = new RegExp(mascota.trim(), "i");
       }
 
       if (profesional) {
-        resultados = resultados.filter((turno) =>
-          turno.profesional.toLowerCase().includes(profesional.toLowerCase())
-        );
+        filtro.profesional = new RegExp(profesional.trim(), "i");
       }
 
       if (tipoConsulta) {
-        resultados = resultados.filter((turno) =>
-          turno.tipoConsulta.toLowerCase().includes(tipoConsulta.toLowerCase())
-        );
+        filtro.tipoConsulta = new RegExp(tipoConsulta.trim(), "i");
       }
 
       if (fecha) {
-        resultados = resultados.filter((turno) => turno.fecha.includes(fecha));
+        filtro.fecha = new RegExp(fecha.trim(), "i");
       }
 
       if (estado) {
-        const estadoBool = estado === "true";
-        resultados = resultados.filter((turno) => turno.estado === estadoBool);
+        filtro.estado = estado.trim().toLowerCase();
       }
 
-      // --------------------- CONTROL DE ERRORES ------------------------------
-      if (resultados.length === 0) {
-        return res.status(404).render("turnosFiltered", {
+      const turnos = await Turno.find(filtro).lean();
+
+      if (turnos.length === 0) {
+        return res.status(404).render("Turnos/turnosFiltered", {
           mensaje: "No se encontraron turnos que coincidan con la búsqueda.",
+          turnos: [],
+          filters: req.query
         });
       }
 
-      res.render("turnosFiltered", { turnos: resultados });
+      res.render("Turnos/turnosFiltered", {
+        turnos,
+        filters: req.query
+      });
+
     } catch (error) {
       console.error("Error al obtener turnos:", error);
-      res
-        .status(500)
-        .render("turnosFiltered", {
-          mensaje: "Error al procesar la solicitud",
-        });
+      res.status(500).render("Turnos/turnosFiltered", {
+        mensaje: "Error al procesar la solicitud.",
+        turnos: [],
+        filters: req.query
+      });
     }
   },
 
   // Mostrar todos los turnos
   mostrarTurnos: async (req, res) => {
     try {
-      const turnos = await readTurnos();
-      res.render("turnos", { turnos });
+      const turnos = await Turno.find().lean();
+      res.render("Turnos/turnos", { turnos });
     } catch (error) {
       console.error("Error al mostrar turnos:", error);
       res.status(500).render("error", { mensaje: "Error al mostrar turnos" });
     }
   },
 
-  // Obtener un turno específico
+  // Obtener un turno por ID
   obtenerTurno: async (req, res) => {
     try {
-      const turnos = await readTurnos();
-      const turno = turnos.find((t) => t.id == req.params.id);
-
+      const turno = await Turno.findById(req.params.id).lean();
       if (!turno) {
-        return res
-          .status(404)
-          .render("error", { mensaje: "Turno no encontrado" });
+        return res.status(404).render("error", { mensaje: "Turno no encontrado" });
       }
-
-      res.render("detalleTurno", { turno });
+      res.render("Turnos/detalleTurno", { turno });
     } catch (error) {
       console.error("Error al obtener turno:", error);
       res.status(500).render("error", { mensaje: "Error al obtener turno" });
@@ -164,25 +128,11 @@ module.exports = {
   // Editar turno
   editarTurno: async (req, res) => {
     try {
-      const turnos = await readTurnos();
-      const index = turnos.findIndex((t) => t.id == req.params.id);
-
-      if (index == -1) {
-        return res
-          .status(404)
-          .render("error", { mensaje: "Turno no encontrado" });
+      const turno = await Turno.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      if (!turno) {
+        return res.status(404).render("error", { mensaje: "Turno no encontrado" });
       }
-
-      const turnoActualizado = {
-        ...turnos[index],
-        ...req.body,
-        estado: req.body.estado || turnos[index].estado,
-      };
-
-      turnos[index] = turnoActualizado;
-      await writeTurnos(turnos);
-
-      res.redirect(`/turnos/${req.params.id.toString()}`);
+      res.redirect(`/turnos/${req.params.id}`);
     } catch (error) {
       console.error("Error al editar turno:", error);
       res.status(500).render("error", { mensaje: "Error al editar turno" });
@@ -192,18 +142,7 @@ module.exports = {
   // Eliminar turno
   eliminarTurno: async (req, res) => {
     try {
-      let turnos = await readTurnos();
-      const turnoEliminado = turnos.find((t) => t.id == req.params.id);
-
-      if (!turnoEliminado) {
-        return res
-          .status(404)
-          .render("error", { mensaje: "Turno no encontrado" });
-      }
-
-      turnos = turnos.filter((t) => t.id !== req.params.id);
-      await writeTurnos(turnos);
-
+      await Turno.findByIdAndDelete(req.params.id);
       res.redirect("/turnos");
     } catch (error) {
       console.error("Error al eliminar turno:", error);
@@ -211,49 +150,32 @@ module.exports = {
     }
   },
 
-  // Para mostrar formulario de edición
+  // Formulario de edición
   mostrarFormularioEdicion: async (req, res) => {
     try {
-      const { id } = req.params;
-      const rutaJSON = path.join(__dirname, "..", "data", "turnos.json");
-      const data = await fs.readFile(rutaJSON, "utf-8");
-      const turnos = JSON.parse(data);
-
-      const turno = turnos.find((t) => t.id == id);
+      const turno = await Turno.findById(req.params.id).lean();
       if (!turno) {
-        return res
-          .status(404)
-          .render("error", { mensaje: "Turno no encontrado" });
+        return res.status(404).render("error", { mensaje: "Turno no encontrado" });
       }
-
-      res.render("editarTurno", { turno });
+      res.render("Turnos/editarTurno", { turno });
     } catch (error) {
-      res
-        .status(500)
-        .render("error", { mensaje: "Error al cargar formulario de edición" });
+      res.status(500).render("error", { mensaje: "Error al cargar formulario de edición" });
     }
   },
 
-  // Para mostrar confirmación de eliminación
+  // Confirmación de eliminación
   mostrarConfirmacionEliminar: async (req, res) => {
     try {
-      const { id } = req.params;
-      const rutaJSON = path.join(__dirname, "..", "data", "turnos.json");
-      const data = await fs.readFile(rutaJSON, "utf-8");
-      const turnos = JSON.parse(data);
-
-      const turno = turnos.find((t) => t.id === id);
+      const turno = await Turno.findById(req.params.id).lean();
       if (!turno) {
-        return res
-          .status(404)
-          .render("error", { mensaje: "Turno no encontrado" });
+        return res.status(404).render("error", { mensaje: "Turno no encontrado" });
       }
-
-      res.render("eliminarTurno", { turno });
+      res.render("Turnos/eliminarTurno", {
+        title: "Confirmar Eliminación",
+        turno
+      });
     } catch (error) {
-      res
-        .status(500)
-        .render("error", { mensaje: "Error al cargar confirmación" });
+      res.status(500).render("error", { mensaje: "Error al cargar confirmación" });
     }
-  },
+  }
 };
