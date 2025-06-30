@@ -13,16 +13,3 @@ const authMiddleware = (req, res, next) => {
 
 module.exports = { authMiddleware };
 
-// // Mock simple que siempre pasa el middleware sin chequear auth
-// // src/middleware/authMiddleware.js
-// const authMiddleware = (req, res, next) => {
-// 	req.user = {
-// 		userId: "mockUserId",
-// 		email: "mockuser@example.com",
-// 		nombre: "Mock",
-// 		apellido: "User",
-// 	};
-// 	next();
-// };
-
-// module.exports = authMiddleware;

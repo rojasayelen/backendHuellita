@@ -1,9 +1,7 @@
-// src/models/__mocks__/turnoModel.js
-
 const turnosMock = [
 	{
 		_id: "1",
-		apellido: "González",
+		apellido: "Gonzalez",
 		nombre: "Ana",
 		dni: "12345678",
 		mascota: "Firulais",

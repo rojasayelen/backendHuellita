@@ -1,69 +1,101 @@
-// Mocks antes de importar app y Turno
-jest.mock("../src/models/turnoModel", () => {
-	return function () {
-		return {
-			save: jest.fn().mockResolvedValue({}),
-		};
-	};
-});
-
-jest.mock("../src/middleware/authMiddleware");
-
-const Turno = require("../src/models/turnoModel");
-const app = require("../index");
 const request = require("supertest");
+const app = require("../index");
+const userService = require("../src/services/userServices");
 
-// Métodos estáticos mockeados
-Turno.find = jest
-	.fn()
-	.mockResolvedValue([{ apellido: "González", mascota: "Firulais" }]);
+// 1. Mockear el service y el middleware
+jest.mock("../src/services/userServices");
+jest.mock("../src/middleware/authMiddleware", () => ({
+	authMiddleware: (req, res, next) => {
+		req.user = { id: "mockUserId", name: "Mock User" };
+		next();
+	},
+}));
 
-Turno.findById = jest.fn().mockReturnValue({
-	lean: jest
-		.fn()
-		.mockResolvedValue({ apellido: "González", mascota: "Firulais" }),
+describe("User Router Tests", () => {
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
+	// --- Pruebas para la Creación de Usuarios ---
+	describe("POST /usuarios/crear", () => {
+		it("debería crear un usuario exitosamente y redirigir", async () => {
+			const mockUserData = {
+				nombre: "Juan",
+				apellido: "Perez",
+				email: "juan@test.com",
+				password: "123",
+			};
+			userService.create.mockResolvedValue(mockUserData);
+
+			const response = await request(app)
+				.post("/usuarios/crear")
+				.send(mockUserData);
+
+			expect(userService.create).toHaveBeenCalledWith(mockUserData);
+			expect(response.statusCode).toBe(302);
+			expect(response.headers.location).toBe(
+				"/usuarios?mensaje=Usuario%20creado%20exitosamente"
+			);
+		});
+	});
+
+	// --- Pruebas para Obtener todos los Usuarios---
+	describe("GET /usuarios", () => {
+		it("debería obtener todos los usuarios y devolver status 200", async () => {
+			// Arrange
+			const mockUsers = [
+				{
+					datosPersonales: {
+						nombre: "Usuario",
+						apellido: "Uno",
+						email: "uno@test.com",
+					},
+					roles: ["user"],
+					activo: true,
+				},
+			];
+			userService.getAll.mockResolvedValue(mockUsers);
+
+			// Act
+			const response = await request(app).get("/usuarios");
+
+			// Assert
+			expect(response.statusCode).toBe(200);
+			expect(userService.getAll).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	// --- Pruebas para Eliminar un Usuario ---
+	describe("POST /usuarios/eliminar/:id", () => {
+		it("debería eliminar un usuario y redirigir", async () => {
+			const userId = "un-id-valido";
+			userService.eliminarUsuarioFisicamente.mockResolvedValue(true);
+
+			const response = await request(app).post(`/usuarios/eliminar/${userId}`);
+
+			expect(userService.eliminarUsuarioFisicamente).toHaveBeenCalledWith(
+				userId
+			);
+			expect(response.statusCode).toBe(302);
+			expect(response.headers.location).toBe(
+				"/usuarios?mensaje=Usuario%20eliminado%20exitosamente"
+			);
+		});
+	});
+
+	// --- Pruebas para Reactivar un Usuario ---
+	describe("POST /usuarios/reactivar/:id", () => {
+		it("debería reactivar un usuario y redirigir", async () => {
+			const userId = "un-id-valido";
+			userService.reactivarUsuario.mockResolvedValue(true);
+
+			const response = await request(app).post(`/usuarios/reactivar/${userId}`);
+
+			expect(userService.reactivarUsuario).toHaveBeenCalledWith(userId);
+			expect(response.statusCode).toBe(302);
+			expect(response.headers.location).toBe(
+				"/usuarios?mensaje=Usuario%20reactivado%20exitosamente"
+			);
+		});
+	});
 });
-
-Turno.findByIdAndDelete = jest.fn().mockResolvedValue({});
-
-// describe("API Turnos con mocks", () => {
-//  	it("GET /turnos devuelve listado y status 200", async () => {
-//  		const res = await request(app).get("/turnos");
-//  		expect(res.statusCode).toBe(200);
-//  		expect(res.text).toMatch(/González/);
-//  	});
-// });
-
-	it("GET /turnos/1 devuelve detalle turno y status 200", async () => {
-		const res = await request(app).get("/turnos/1");
-		expect(res.statusCode).toBe(200);
-		expect(res.text).toMatch(/Firulais/);
-	});
-
-	it("POST /turnos crea un nuevo turno y redirige", async () => {
-		const nuevoTurno = {
-			apellido: "Pérez",
-			nombre: "Carlos",
-			dni: "87654321",
-			mascota: "Michi",
-			especie: "Gato",
-			raza: "Persa",
-			fecha: "2025-08-01",
-			hora: "15:00",
-			tipoConsulta: "Consulta general",
-			profesional: "Dr. Ramos",
-		};
-
-		const res = await request(app)
-			.post("/turnos")
-			.type("form")
-			.send(nuevoTurno);
-
-		expect(res.statusCode).toBe(302);
-	});
-
-	it("DELETE /turnos/1 elimina turno y redirige", async () => {
-		const res = await request(app).delete("/turnos/1");
-		expect(res.statusCode).toBe(302);
-	});
-
