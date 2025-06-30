@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const fs = require("fs").promises;
 const path = require("path");
 
-// --- FUNCIONES DE LECTURA (SIN CAMBIOS) ---
+// --- FUNCIONES DE LECTURA
 const getAll = async () => {
   try {
     const usuarios = await User.find().populate("datosPersonales");
@@ -43,7 +43,7 @@ const obtenerUsuarioPorId = async (id) => {
   return await User.findById(id).populate("datosPersonales");
 };
 
-// --- FUNCIÓN DE CREACIÓN (SIN CAMBIOS) ---
+// --- FUNCIÓN DE CREACIÓN 
 const create = async (userData) => {
   const { nombre, apellido, email, password, rol } = userData;
   try {
@@ -67,7 +67,7 @@ const create = async (userData) => {
   }
 };
 
-// --- FUNCIONES DE ACTUALIZACIÓN (SIN CAMBIOS) ---
+// --- FUNCIONES DE ACTUALIZACIÓN
 const actualizarUsuarioPorId = async (id, updateData) => {
   const usuario = await User.findById(id).populate("datosPersonales");
   if (!usuario) return null;
@@ -82,8 +82,6 @@ const actualizarUsuarioPorId = async (id, updateData) => {
   }
   return await User.findByIdAndUpdate(id, { $set: updateData }, { new: true }).populate("datosPersonales");
 };
-
-// --- FUNCIONES DE GESTIÓN DE ESTADO Y ELIMINACIÓN (MODIFICADAS Y NUEVAS) ---
 
 /**
  * Desactiva un usuario, aplicando reglas de negocio de permisos.
@@ -119,14 +117,11 @@ const desactivarUsuarioConPermisos = async (idADesactivar, idDeQuienDesactiva) =
         { new: true }
     );
     
-    if (!usuarioDesactivado) return null; // Si el usuario a desactivar no existe
+    if (!usuarioDesactivado) return null;
 
     return usuarioDesactivado;
 };
 
-/**
- * Reactiva un usuario. Por ahora, solo los admins pueden acceder a esta ruta.
- */
 const reactivarUsuario = async (id) => {
   return await User.findByIdAndUpdate(
     id,
@@ -179,7 +174,7 @@ const eliminarUsuarioConPermisos = async (idAEliminar, idDeQuienElimina) => {
     }
 };
 
-// --- FUNCIONES DE AUTENTICACIÓN (SIN CAMBIOS) ---
+//  FUNCIONES DE AUTENTICACIÓN 
 const verificarCredenciales = async (email, password) => {
   const persona = await Persona.findOne({ email });
   if (!persona) return null;
