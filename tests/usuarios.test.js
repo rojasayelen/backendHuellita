@@ -5,7 +5,6 @@ const User = require('../src/models/userModel.js'); // Ajusta la ruta a tus mode
 const Persona = require('../src/models/personaModel.js');
 
 // --- Configuración de la Base de Datos de Prueba ---
-// Es una buena práctica usar una base de datos separada para los tests.
 beforeAll(async () => {
     // Usamos una base de datos en memoria o una de prueba.
     // Asegúrate de que tu .env tenga una variable MONGO_URI_TEST
