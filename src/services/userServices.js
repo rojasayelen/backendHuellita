@@ -4,36 +4,6 @@ const bcrypt = require("bcrypt");
 const fs = require("fs").promises;
 const path = require("path");
 
-// Función temporal para crear usuarios en archivo JSON
-const createUserInJSON = async (userData) => {
-  try {
-    const { nombre, apellido, email, password } = userData;
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const usersPath = path.join(__dirname, "../data/usuarios.json");
-    const usersData = await fs.readFile(usersPath, "utf-8");
-    const users = JSON.parse(usersData);
-
-    // Generar nuevo ID
-    const newId = Math.max(...users.map((u) => u.id), 0) + 1;
-
-    const newUser = {
-      id: newId,
-      nombre,
-      apellido,
-      email,
-      password: hashedPassword,
-    };
-
-    users.push(newUser);
-    await fs.writeFile(usersPath, JSON.stringify(users, null, 2));
-
-    return newUser;
-  } catch (error) {
-    throw new Error(`Error creando usuario en JSON: ${error.message}`);
-  }
-};
-
 const getAll = async () => {
   try {
     const usuarios = await User.find().populate("datosPersonales");
@@ -42,28 +12,6 @@ const getAll = async () => {
     // Fallback a archivo JSON
     console.log("MongoDB no disponible, usando archivo JSON como fallback");
     return await getAllFromJSON();
-  }
-};
-
-// Función temporal para obtener usuarios desde archivo JSON
-const getAllFromJSON = async () => {
-  try {
-    const usersPath = path.join(__dirname, "../data/usuarios.json");
-    const usersData = await fs.readFile(usersPath, "utf-8");
-    const users = JSON.parse(usersData);
-
-    // Convertir formato para compatibilidad
-    return users.map((user) => ({
-      _id: user.id,
-      datosPersonales: {
-        nombre: user.nombre,
-        apellido: user.apellido,
-        email: user.email,
-      },
-      password: user.password,
-    }));
-  } catch (error) {
-    throw new Error(`Error leyendo usuarios desde JSON: ${error.message}`);
   }
 };
 
@@ -84,31 +32,6 @@ const getByEmail = async (email) => {
   }
 };
 
-// Función temporal para obtener usuario por email desde JSON
-const getByEmailFromJSON = async (email) => {
-  try {
-    const usersPath = path.join(__dirname, "../data/usuarios.json");
-    const usersData = await fs.readFile(usersPath, "utf-8");
-    const users = JSON.parse(usersData);
-
-    const user = users.find((u) => u.email === email);
-    if (!user) return null;
-
-    // Convertir formato para compatibilidad
-    return {
-      _id: user.id,
-      datosPersonales: {
-        nombre: user.nombre,
-        apellido: user.apellido,
-        email: user.email,
-      },
-      password: user.password,
-    };
-  } catch (error) {
-    throw new Error(`Error buscando usuario por email: ${error.message}`);
-  }
-};
-
 // Obtener usuario por ID
 const getById = async (id) => {
   try {
@@ -118,31 +41,6 @@ const getById = async (id) => {
     // Fallback a archivo JSON
     console.log("MongoDB no disponible, usando archivo JSON como fallback");
     return await getByIdFromJSON(id);
-  }
-};
-
-// Función temporal para obtener usuario por ID desde JSON
-const getByIdFromJSON = async (id) => {
-  try {
-    const usersPath = path.join(__dirname, "../data/usuarios.json");
-    const usersData = await fs.readFile(usersPath, "utf-8");
-    const users = JSON.parse(usersData);
-
-    const user = users.find((u) => u.id === parseInt(id));
-    if (!user) return null;
-
-    // Convertir formato para compatibilidad
-    return {
-      _id: user.id,
-      datosPersonales: {
-        nombre: user.nombre,
-        apellido: user.apellido,
-        email: user.email,
-      },
-      password: user.password,
-    };
-  } catch (error) {
-    throw new Error(`Error buscando usuario por ID: ${error.message}`);
   }
 };
 
@@ -181,21 +79,42 @@ const updateByEmail = async (email, updateData) => {
 };
 
 // Eliminar usuario por ID
-const deleteById = async (id) => {
-  try {
-    const user = await User.findById(id).populate("datosPersonales");
-    if (!user) return false;
+const deleteById = async (idAEliminar, idDeQuienElimina) => {
+  const usuarioQueElimina = await User.findById(idDeQuienElimina);
+    if (!usuarioQueElimina) {
+        const error = new Error('Usuario solicitante no válido.');
+        error.statusCode = 401; // Unauthorized
+        throw error;
+    }
+    
+    // Condición 1: Solo un 'admin' puede eliminar.
+    if (!usuarioQueElimina.roles.includes('admin')) {
+        const error = new Error('No tienes permisos de administrador para eliminar usuarios.');
+        error.statusCode = 403; 
+        throw error;
+    }
 
-    // Eliminar la persona asociada
-    await Persona.findByIdAndDelete(user.datosPersonales._id);
+    // Condición 2: El admin no puede eliminarse a sí mismo.
+    if (idDeQuienElimina.toString() === idAEliminar.toString()) {
+        const error = new Error('Un administrador no puede eliminarse a sí mismo.');
+        error.statusCode = 400; // Bad Request
+        throw error;
+    }
 
-    // Eliminar el usuario
-    await User.findByIdAndDelete(id);
+    // Si todas las validaciones pasan, procedemos a buscar y eliminar.
+    const usuarioAEliminar = await User.findById(idAEliminar);
 
-    return true;
-  } catch (error) {
-    throw error;
-  }
+    if (!usuarioAEliminar) {
+        return false; 
+    }
+
+    try {
+      await Persona.findByIdAndDelete(usuarioAEliminar.datosPersonales);
+      await User.findByIdAndDelete(idAEliminar);
+      return true; 
+    } catch (error) {
+      throw error;
+    }
 };
 
 const create = async (userData) => {

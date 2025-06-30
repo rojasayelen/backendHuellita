@@ -124,5 +124,33 @@
     "tipoConsulta": "dolor",
     "profesional": "Dra. Martinez",
     "estado": "pendiente"
+  },
+  {
+    "id": 10,
+    "apellido": "ro",
+    "nombre": "aye",
+    "dni": "2342342432",
+    "mascota": "Barba",
+    "especie": "Perro",
+    "raza": "Callejero",
+    "fecha": "2025-06-30",
+    "hora": "11:15",
+    "tipoConsulta": "Consulta general",
+    "profesional": "Juana",
+    "estado": "confirmado"
+  },
+  {
+    "id": 11,
+    "apellido": "Gaspi",
+    "nombre": "Li",
+    "dni": "3w4w3534",
+    "mascota": "Chilli",
+    "especie": "Gato",
+    "raza": "Callejero",
+    "fecha": "2025-06-30",
+    "hora": "15:20",
+    "tipoConsulta": "Vacunacion",
+    "profesional": "Andres",
+    "estado": "cancelado"
   }
 ]
