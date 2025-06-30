@@ -213,7 +213,7 @@ html
         tbody
           each turno in turnos
             tr
-              td= turno.id
+              td= turno._id.toString().substring(0, 4)
               td= turno.apellido
               td= turno.nombre
               td= turno.mascota
@@ -223,9 +223,8 @@ html
               td= turno.tipoConsulta || '-'
               td(class=`status-${turno.estado}`)= turno.estado
               td.actions
-                a.btn(href=`/turnos/${turno.id}` style="padding: 5px 8px;") Ver
-                a.btn(href=`/turnos/${turno.id}/editar` style="padding: 5px 8px;") Editar
-    
+                a.btn(href=`/turnos/${turno._id}` style="padding: 5px 8px;") Ver
+                a.btn(href=`/turnos/${turno._id}/editar` style="padding: 5px 8px;") Editar  
     else if Object.keys(filters).length > 0
       .no-results
         p No se encontraron turnos con los filtros aplicados

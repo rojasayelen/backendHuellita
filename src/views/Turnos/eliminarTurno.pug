@@ -69,6 +69,7 @@ html
           | #{turno.fecha} a las #{turno.hora}
 
       .btn-container
-        form(action=`/turnos/${turno.id}?_method=DELETE` method="POST" style="display: inline-block")
+        form(action=`/turnos/${turno._id}` method="POST" style="display: inline-block")
+          input(type="hidden" name="_method" value="DELETE")
           button.btn.btn-danger(type="submit") Confirmar Eliminación
-        a.btn(href=`/turnos/${turno.id}`) Cancelar
+        a.btn(href=`/turnos/${turno._id}`) Cancelar
