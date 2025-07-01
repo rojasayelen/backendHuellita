@@ -88,3 +88,5 @@ app.use(express.static(path.join(__dirname, "public")));
 //         console.log(`Server corriendo en http://localhost:${port}`);
 //     });
 // }
+
+module.exportes = app;
