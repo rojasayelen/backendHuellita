@@ -166,31 +166,14 @@ module.exports = {
   // Confirmación de eliminación
   mostrarConfirmacionEliminar: async (req, res) => {
     try {
-<<<<<<< HEAD
-      const { id } = req.params;
-      const rutaJSON = path.join(__dirname, "..", "data", "turnos.json");
-      const data = await fs.readFile(rutaJSON, "utf-8");
-      const turnos = JSON.parse(data);
-
-      const turno = turnos.find((t) => t.id == id);
-=======
       const turno = await Turno.findById(req.params.id).lean();
->>>>>>> 6332a168f928e8a45bfb40daea4fd951b234b530
       if (!turno) {
         return res.status(404).render("error", { mensaje: "Turno no encontrado" });
       }
-<<<<<<< HEAD
-
-      res.render("eliminarTurno", { 
-      title: "Confirmar Eliminación",
-      turno 
-    });
-=======
       res.render("Turnos/eliminarTurno", {
         title: "Confirmar Eliminación",
         turno
       });
->>>>>>> 6332a168f928e8a45bfb40daea4fd951b234b530
     } catch (error) {
       res.status(500).render("error", { mensaje: "Error al cargar confirmación" });
     }
