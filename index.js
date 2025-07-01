@@ -89,4 +89,4 @@ app.use(express.static(path.join(__dirname, "public")));
 //     });
 // }
 
-module.exportes = app;
+module.exports = app;
