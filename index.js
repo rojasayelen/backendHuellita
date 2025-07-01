@@ -83,8 +83,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 //Iniciar servidor en Vercel o en local
-// if (process.env.NODE_ENV !== 'production') {
-//     app.listen(port, () => {
-//         console.log(`Server corriendo en http://localhost:${port}`);
-//     });
-// }
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server corriendo en http://localhost:${port}`);
+    });
+}
